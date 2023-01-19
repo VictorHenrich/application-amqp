@@ -44,7 +44,7 @@ class TaskManager:
         if not processes:
             self.__argument.print_help()
             
-            sys.exit()
+            sys.exit(0)
 
         [process.start() for process in processes]
         [process.join() for process in processes]
