@@ -40,6 +40,10 @@ class ControllerTaskManagers:
         self.__subparsers: _SubParsersAction[ArgumentParser] = subparsers
         self.__managers: Mapping[str, ITaskManager] = {}
 
+    @property
+    def tasks_managers(self) -> Mapping[str, ITaskManager]:
+        return self.__managers
+
     def __create_config_argument(
         self,
         name: str,

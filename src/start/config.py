@@ -7,7 +7,7 @@ __HTTP__ = {
 }
 
 __CLI__ = {
-    "managers": ['api'],
+    "managers": ['api', 'teste'],
     "name": "CLI DRIVE API AMQP",
     "version": 1.0,
     "description": "Terminal de comandos para a aplicação Drive API"

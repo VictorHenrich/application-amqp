@@ -1,22 +1,18 @@
 from typing import (
-    Generic, 
-    TypeVar, 
-    Any, 
     Union,
     Optional,
     TypeAlias,
-    Coroutine
+    Coroutine,
+    Awaitable
 )
 from abc import ABC, abstractmethod
 import asyncio
 from colorama import Fore, Style
 
-
-T = TypeVar('T', bound=Union[Any, None])
 OptionalString: TypeAlias = Optional[str]
 
 
-class Task(ABC, Generic[T]):
+class Task(ABC):
     def __init__(
         self,
         name: str,
@@ -46,21 +42,21 @@ class Task(ABC, Generic[T]):
         return self.__debug
 
     @abstractmethod
-    def run(self, args: T) -> None:
+    def run(self) -> Union[None, Awaitable[None]]:
         pass
 
     def __reset_print(self) -> None:
         print(Style.RESET_ALL, Fore.RESET)
 
-    def __initial_print(self) -> None:
-        print(Fore.LIGHTBLUE_EX, Style.BRIGHT, Style.DIM)
-        print(f'### SUCCESS IN TASK {self.__name.upper()}\n\n')
+    def __success_print(self) -> None:
+        print(Fore.LIGHTGREEN_EX, Style.BRIGHT, Style.DIM)
+        print(f'### SUCCESS IN TASK {self.__name.upper()}\n')
 
         self.__reset_print()
 
-    def __success_print(self) -> None:
+    def __initial_print(self) -> None:
         print(Fore.LIGHTBLUE_EX, Style.BRIGHT, Style.DIM)
-        print(f'### RUNNING TASK {self.__name.upper()}\n\n')
+        print(f'### RUNNING TASK {self.__name.upper()}\n')
 
         self.__reset_print()
 
@@ -71,11 +67,11 @@ class Task(ABC, Generic[T]):
 
         self.__reset_print()
 
-    def execute(self, args: T) -> None:
+    def execute(self, args: None = None) -> None:
         self.__initial_print()
 
         try:
-            result: Optional[Coroutine] = self.run(args)
+            result: Optional[Coroutine] = self.run()
 
             if type(result) is Coroutine:
                 asyncio.run(result)
