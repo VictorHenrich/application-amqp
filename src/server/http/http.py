@@ -10,7 +10,7 @@ class HTTP(Api):
         host: str,
         port: Union[str, int],
         secret_key: str,
-        debug: bool = True
+        debug: bool
     ):
         core: Flask = Flask(__name__)
 

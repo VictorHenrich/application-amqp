@@ -3,12 +3,13 @@ from typing import (
     Mapping, 
     Any,
     Sequence,
-    Coroutine
+    Coroutine,
+    Awaitable
 )
 from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncSession
-from sqlalchemy.orm.decl_api import declarative_base, _DeclarativeBase
+from sqlalchemy.orm.decl_api import declarative_base, DeclarativeMeta
 import asyncio
 
 
@@ -26,12 +27,12 @@ class Database:
             async_
         )
 
-        self.__Model: type[_DeclarativeBase] = declarative_base(self.__engine)
+        self.__Model: type[DeclarativeMeta] = declarative_base(self.__engine)
 
         self.__name: str = name
 
     @property
-    def Model(self) -> type[_DeclarativeBase]:
+    def Model(self) -> type[DeclarativeMeta]:
         return self.__Model
 
     @property
@@ -62,7 +63,7 @@ class Database:
 
         self.__Model.metadata.create_all(self.__engine)
 
-    async def __migrate_async(self, drop_tables: bool) -> Coroutine[None]:
+    async def __migrate_async(self, drop_tables: bool) -> Awaitable[None]:
         async with self.__engine.begin() as connection:
             if drop_tables:
                 await connection.run_sync(self.__Model.metadata.drop_all)

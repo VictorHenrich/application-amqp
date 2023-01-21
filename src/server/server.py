@@ -1,5 +1,14 @@
 from dataclasses import dataclass
-from typing import Union, Mapping, Any
+from typing import (
+    Union, 
+    Mapping, 
+    Any, 
+    Sequence, 
+    TypeAlias,
+    Callable,
+    List
+)
+from threading import Thread
 
 from .http import HTTP
 from .cli import ControllerTaskManagers
@@ -7,13 +16,54 @@ from .database import Databases, DatabaseBuilder, Database
 from .amqp import AMQP
 
 
+MappingDict: TypeAlias = Mapping[str, Any]
+FunctionListener: TypeAlias = Callable[[None], None]
+
 
 @dataclass
 class Server:
-    http: HTTP
-    cli: ControllerTaskManagers
-    database: Databases
-    amqp: AMQP
+    def __init__(
+        self,
+        http: HTTP,
+        cli: ControllerTaskManagers,
+        databases: Databases,
+        amqp: AMQP
+    ) -> None:
+        self.__http: HTTP = http
+        self.__cli: ControllerTaskManagers = cli
+        self.__databases: Databases = databases
+        self.__amqp: AMQP = amqp
+        self.__listeners: List[FunctionListener] = []
+    
+    @property
+    def http(self) -> HTTP:
+        return self.__http
+
+    @property
+    def cli(self) -> ControllerTaskManagers:
+        return self.__cli
+
+    @property
+    def databases(self) -> Databases:
+        return self.__databases
+
+    @property
+    def amqp(self) -> AMQP:
+        return self.__amqp
+
+    def initializer(self, target: FunctionListener) -> FunctionListener:
+        self.__listeners.append(target)
+
+        return target
+
+    def start(self) -> None:
+        listeners: Sequence[Thread] = [
+            Thread(target=listener) 
+            for listener in self.__listeners
+        ]
+
+        [listener.start() for listener in listeners]
+        [listener.join() for listener in listeners]
 
 
 
@@ -23,7 +73,7 @@ class ServerFactory:
         host: str,
         port: Union[str, int],
         secret_key: str,
-        debug: bool
+        debug: bool = True
     ) -> HTTP:
         return HTTP(
             host,
@@ -35,20 +85,27 @@ class ServerFactory:
     @staticmethod
     def __create_cli(
         name: str,
-        version: Union[float, str], 
-        description: str,
-        usage: str
+        managers: Sequence[str],
+        version: Union[float, str] = 1, 
+        description: str = "",
+        usage: str = ""
     ) -> ControllerTaskManagers:
-        return ControllerTaskManagers(
+
+        cli: ControllerTaskManagers = ControllerTaskManagers(
             name,
             version,
             description,
             usage
         )
 
+        for manager_name in managers:
+            cli.create_task_manager(manager_name)
+
+        return cli
+
     @staticmethod
     def __create_databases(
-        bases: Mapping[str, Mapping[str, Any]]
+        bases: Mapping[str, MappingDict] = []
     ) -> Databases:
         databases: Databases = Databases()
 
@@ -76,18 +133,16 @@ class ServerFactory:
         return databases
 
     @staticmethod
-    def __create_amqp(
-
-    ) -> AMQP:
+    def __create_amqp() -> AMQP:
         return AMQP()
 
     @classmethod
     def create(
         cls,
-        http_props: Mapping[str, Any],
-        cli_props: Mapping[str, Any],
-        databases_props: Mapping[str, Any],
-        amqp_props: Mapping[str, Any]
+        http_props: MappingDict,
+        cli_props: MappingDict,
+        databases_props: MappingDict,
+        amqp_props: MappingDict = {}
     ) -> Server:
         http: HTTP = cls.__create_http(**http_props)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import (
     Union, 
     Tuple, 
@@ -15,7 +16,6 @@ from .task_manager import TaskManager
 from .task import Task
 
 
-SubParsers: TypeAlias = _SubParsersAction[ArgumentParser]
 ITask: TypeAlias = ICommand[Any]
 ITaskManager: TypeAlias = ICommand[Sequence[str]]
 
@@ -26,8 +26,8 @@ class ControllerTaskManagers:
         self,
         name: str,
         version: Union[float, str], 
-        description: str = "",
-        usage: str = ""
+        description: str,
+        usage: str
     ) -> None:
         argument, subparsers = self.__create_config_argument(
             name,
@@ -37,7 +37,7 @@ class ControllerTaskManagers:
         )
 
         self.__argument: ArgumentParser = argument
-        self.__subparsers: SubParsers = subparsers
+        self.__subparsers: _SubParsersAction[ArgumentParser] = subparsers
         self.__managers: Mapping[str, ITaskManager] = {}
 
     def __create_config_argument(
@@ -46,7 +46,7 @@ class ControllerTaskManagers:
         version: Union[float, str], 
         description: str,
         usage: str
-    ) -> Tuple[ArgumentParser, SubParsers]:
+    ) -> Tuple[ArgumentParser, _SubParsersAction[ArgumentParser]]:
 
         argument: ArgumentParser = ArgumentParser(
             prog=name,
@@ -54,7 +54,7 @@ class ControllerTaskManagers:
             usage=usage
         )
 
-        subparsers: SubParsers = argument.add_subparsers(
+        subparsers: _SubParsersAction[ArgumentParser] = argument.add_subparsers(
             dest="module",
             description="These modules are the task managers created in the system.",
             title="Task Managers",
@@ -65,7 +65,7 @@ class ControllerTaskManagers:
             '-v',
             '--version',
             action="version",
-            version=f"{name} {version}"
+            version=f"{name.title()} {version}"
         )
 
         return argument, subparsers
