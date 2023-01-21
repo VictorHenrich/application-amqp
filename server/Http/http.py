@@ -4,7 +4,7 @@ from flask_restful import Api
 
 
 
-class Http(Api):
+class HTTP(Api):
     def __init__(
         self,
         host: str,

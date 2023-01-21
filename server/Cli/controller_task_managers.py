@@ -5,7 +5,8 @@ from typing import (
     Mapping,
     Optional,
     Any,
-    Sequence
+    Sequence,
+    Callable
 )
 from argparse import ArgumentParser, _SubParsersAction, Namespace
 from .icommand import ICommand
@@ -20,7 +21,7 @@ ITaskManager: TypeAlias = ICommand[Sequence[str]]
 
 
 
-class ControllerManagers:
+class ControllerTaskManagers:
     def __init__(
         self,
         name: str,
@@ -69,6 +70,11 @@ class ControllerManagers:
 
         return argument, subparsers
 
+    def create_task_manager(self, name: str) -> None:
+        task_manager: TaskManager = TaskManager(name, self.__subparsers)
+
+        self.__managers[task_manager.name] = task_manager
+
     def add_task(
         self,
         name: str,
@@ -76,8 +82,8 @@ class ControllerManagers:
         shortname: Optional[str] = None,
         description: Optional[str] = None,
         debug: bool = False
-    ):
-        def wrapper(cls: Task):
+    ) -> Callable[[type[Task]], type[Task]]:
+        def wrapper(cls: type[Task]) -> type[Task]:
             task: ITask = cls(
                 name,
                 shortname,

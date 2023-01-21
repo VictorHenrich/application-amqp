@@ -4,8 +4,6 @@ from pika.adapters.blocking_connection import BlockingChannel
 
 
 class AbstractAMQP(ABC):
-    connection_parameters: ConnectionParameters
-
     def __init__(self, connection: ConnectionParameters) -> None:
         self.__connection: ConnectionParameters = connection
 

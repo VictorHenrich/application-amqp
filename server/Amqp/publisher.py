@@ -5,7 +5,7 @@ from pika.adapters.blocking_connection import BlockingChannel
 from .abstract_amqp import AbstractAMQP
 
 
-class AMPQPublisher(AbstractAMQP):
+class AMQPPublisher(AbstractAMQP):
     def __init__(
         self,
         publisher_name: str,

@@ -7,7 +7,6 @@ from .abstract_amqp import AbstractAMQP
 
 
 class AMQPConsumer(AbstractAMQP, ABC):
-
     def __init__(
         self,
         consumer_name: str,
@@ -18,10 +17,14 @@ class AMQPConsumer(AbstractAMQP, ABC):
     ) -> None:
         super().__init__(connection)
 
-        self.__consumer_name: str = consumer_name
+        self.__name: str = consumer_name
         self.__queue_name: str = queue_name
         self.__ack: bool = ack
         self.__arguments: Optional[Mapping[str, Any]] = arguments
+
+    @property
+    def name(self) -> str:
+        return self.__name
 
     def start(self) -> None:
         channel: BlockingChannel = self.get_channel()
@@ -39,7 +42,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
             arguments=self.__arguments
         )
 
-        print(f'Consumer ${self.__consumer_name} running in ${self.connection_parameters.host}:${self.connection_parameters.port}')
+        print(f'Consumer ${self.__name} running in ${self.connection_parameters.host}:${self.connection_parameters.port}')
 
         channel.start_consuming()
 
