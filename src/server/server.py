@@ -57,13 +57,8 @@ class Server:
         return target
 
     def start(self) -> None:
-        listeners: Sequence[Thread] = [
-            Thread(target=listener) 
-            for listener in self.__listeners
-        ]
-
-        [listener.start() for listener in listeners]
-        [listener.join() for listener in listeners]
+        for listener in self.__listeners:
+            listener()
 
 
 
