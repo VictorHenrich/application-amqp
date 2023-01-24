@@ -3,10 +3,10 @@ from typing import (
     Generic,
     TypeVar
 )
-
+from patterns.models import BaseModel
 
 T = TypeVar('T')
-TR = TypeVar('TR')
+TR = TypeVar('TR', None, BaseModel)
 
 
 class IFindRepository(Protocol, Generic[T, TR]):
