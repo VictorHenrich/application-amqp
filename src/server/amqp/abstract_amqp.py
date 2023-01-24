@@ -13,3 +13,7 @@ class AbstractAMQP(ABC):
     @abstractmethod
     def start(self) -> None:
         pass
+
+    @property
+    def connection(self) -> ConnectionParameters:
+        return self.__connection

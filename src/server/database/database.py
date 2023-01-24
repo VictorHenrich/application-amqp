@@ -57,6 +57,8 @@ class Database:
         else:
             self.__migrate_default(drop_tables)
 
+        print(f'{self.__name.upper()} DATABASE MIGRATED SUCCESSFULLY!')
+
     def __migrate_default(self, drop_tables: bool) -> None:
         if drop_tables:
             self.__Model.metadata.drop_all(self.__engine)

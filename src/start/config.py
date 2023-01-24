@@ -7,9 +7,9 @@ __HTTP__ = {
 }
 
 __CLI__ = {
-    "managers": ['api', 'consumers'],
+    "managers": ['api', 'consumers', 'databases'],
     "name": "CLI DRIVE API AMQP",
-    "version": 1.0,
+    "version": 1.3,
     "description": "Terminal de comandos para a aplicação Drive API"
 }
 
@@ -20,7 +20,7 @@ __DATABASES__ = {
             "port": 5432,
             "username": "postgres",
             "password": "1234",
-            "dbname": "teste",
+            "dbname": "banco_teste",
             "dialect": "postgresql",
             "drive_default": "psycopg2",
             "drive_async": "asyncpg"

@@ -13,10 +13,10 @@ class Databases:
     ) -> None:
         self.__bases: Mapping[str, IDatabase] = {}
 
-    def get_database(self, name: Optional[str]) -> Database:
+    def get_database(self, name: Optional[str] = None) -> Database:
         try:
             if len(self.__bases) == 1 or not name:
-                list(self.__bases.values())[0]
+                return list(self.__bases.values())[0]
 
             else:
                 return [
@@ -37,7 +37,7 @@ class Databases:
 
         return database.create_session(*args, **kwargs)
 
-    def migrate(self, database_name: Optional[str], drop_tables: bool) -> None:
+    def migrate(self, database_name: Optional[str] = None, drop_tables: bool = False) -> None:
         database: Database = self.get_database(database_name)
 
         database.migrate(drop_tables)

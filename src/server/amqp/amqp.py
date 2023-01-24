@@ -51,4 +51,3 @@ class AMQP:
         ]
 
         [thread.start() for thread in threads]
-        [thread.join() for thread in threads]

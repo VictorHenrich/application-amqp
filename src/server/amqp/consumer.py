@@ -2,6 +2,7 @@ from typing import Mapping, Any, Optional
 from abc import ABC, abstractmethod
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
+from pika.spec import Basic, BasicProperties
 from .abstract_amqp import AbstractAMQP
 
 
@@ -38,14 +39,34 @@ class AMQPConsumer(AbstractAMQP, ABC):
         channel.basic_consume(
             queue=self.__queue_name,
             auto_ack=self.__ack,
-            on_message_callback=self.on_message_queue,
+            on_message_callback=self.__on_message,
             arguments=self.__arguments
         )
 
-        print(f'Consumer ${self.__name} running in ${self.connection_parameters.host}:${self.connection_parameters.port}')
+        print(f'Consumer {self.__name} running in {self.connection.host}:{self.connection.port}')
 
         channel.start_consuming()
 
+    def __on_message(
+        self, 
+        ch: BlockingChannel, 
+        method: Basic.Deliver, 
+        properties: BasicProperties, 
+        body: bytes
+    ) -> None:
+
+        options: Mapping[str, Any] = {
+            "channel": ch,
+            "method": method,
+            "properties": properties
+        }
+
+        self.on_message_queue(body, **options)
+
     @abstractmethod
-    def on_message_queue(self, ch, method, properties, body: bytes) -> None:
+    def on_message_queue(
+        self,
+        body: bytes,
+        **kwargs: Mapping[str, Any]
+    ) -> None:
         pass
