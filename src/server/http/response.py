@@ -1,6 +1,6 @@
 from abc import ABC
 import json
-from typing import Union, Any, Mapping, TypeAlias
+from typing import Optional, Any, Mapping, TypeAlias
 from flask import Response
 
 
@@ -38,7 +38,7 @@ class BaseResponse(Response, ABC):
 class ResponseSuccess(BaseResponse):
     def __init__(
         self, 
-        data: Any,
+        data: Optional[Any] = None,
         message: str = "OK", 
         status: int = 200,  
         headers: MappingDict = None

@@ -1,7 +1,7 @@
 from start import app
 
-from api.controllers.teste_controller import TesteController
+from api.controllers.drive_controller import DriveController
 
 
 
-app.http.add_resource(TesteController, "/")
+app.http.add_resource(DriveController, "/drive")
