@@ -6,9 +6,11 @@ from server.cli import Task
     name="run",
     task_manager_name="api",
     shortname="r",
-    debug=False,
+    debug=True,
     description="Este comando inicializa a API construida!",
 )
 class TaskRunApi(Task):
     def run(self) -> None:
+        import api.routes
+        
         app.http.start()

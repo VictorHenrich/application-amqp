@@ -6,9 +6,7 @@ from typing import (
     Sequence, 
     TypeAlias,
     Callable,
-    List
 )
-from threading import Thread
 
 from .http import HTTP
 from .cli import ControllerTaskManagers
@@ -33,7 +31,6 @@ class Server:
         self.__cli: ControllerTaskManagers = cli
         self.__databases: Databases = databases
         self.__amqp: AMQP = amqp
-        self.__listeners: List[FunctionListener] = []
     
     @property
     def http(self) -> HTTP:
@@ -51,14 +48,10 @@ class Server:
     def amqp(self) -> AMQP:
         return self.__amqp
 
-    def initializer(self, target: FunctionListener) -> FunctionListener:
-        self.__listeners.append(target)
-
-        return target
-
     def start(self) -> None:
-        for listener in self.__listeners:
-            listener()
+        import tasks
+
+        self.__cli.execute()
 
 
 

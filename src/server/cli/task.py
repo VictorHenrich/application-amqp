@@ -68,20 +68,7 @@ class Task(ABC):
         self.__reset_print()
 
     def execute(self, args: None = None) -> None:
-        self.__initial_print()
+        result: Optional[Coroutine] = self.run()
 
-        try:
-            result: Optional[Coroutine] = self.run()
-
-            if type(result) is Coroutine:
-                asyncio.run(result)
-
-
-        except BaseException as error:
-            self.__error_print(error)
-
-            if self.__debug:
-                raise error
-        
-        else:
-            self.__success_print()
+        if type(result) is Coroutine:
+            asyncio.run(result)
