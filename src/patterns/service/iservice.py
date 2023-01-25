@@ -1,13 +1,8 @@
-from typing import (
-    Protocol,
-    Generic,
-    TypeVar,
-    Any
-)
+from typing import Protocol, Generic, TypeVar, Any
 
 
-T = TypeVar('T', Any, None)
-TR = TypeVar('TR', Any, None)
+T = TypeVar("T", Any, None)
+TR = TypeVar("TR", Any, None)
 
 
 class IService(Protocol, Generic[T, TR]):

@@ -1,14 +1,5 @@
 from __future__ import annotations
-from typing import (
-    Union, 
-    Tuple, 
-    TypeAlias, 
-    Mapping,
-    Optional,
-    Any,
-    Sequence,
-    Callable
-)
+from typing import Union, Tuple, TypeAlias, Mapping, Optional, Any, Sequence, Callable
 from argparse import ArgumentParser, _SubParsersAction, Namespace
 from .icommand import ICommand
 
@@ -20,20 +11,12 @@ ITask: TypeAlias = ICommand[Any]
 ITaskManager: TypeAlias = ICommand[Sequence[str]]
 
 
-
 class ControllerTaskManagers:
     def __init__(
-        self,
-        name: str,
-        version: Union[float, str], 
-        description: str,
-        usage: str
+        self, name: str, version: Union[float, str], description: str, usage: str
     ) -> None:
         argument, subparsers = self.__create_config_argument(
-            name,
-            version,
-            description,
-            usage
+            name, version, description, usage
         )
 
         self.__argument: ArgumentParser = argument
@@ -45,31 +28,22 @@ class ControllerTaskManagers:
         return self.__managers
 
     def __create_config_argument(
-        self,
-        name: str,
-        version: Union[float, str], 
-        description: str,
-        usage: str
+        self, name: str, version: Union[float, str], description: str, usage: str
     ) -> Tuple[ArgumentParser, _SubParsersAction[ArgumentParser]]:
 
         argument: ArgumentParser = ArgumentParser(
-            prog=name,
-            description=description,
-            usage=usage
+            prog=name, description=description, usage=usage
         )
 
         subparsers: _SubParsersAction[ArgumentParser] = argument.add_subparsers(
             dest="module",
             description="These modules are the task managers created in the system.",
             title="Task Managers",
-            required=True
+            required=True,
         )
 
         argument.add_argument(
-            '-v',
-            '--version',
-            action="version",
-            version=f"{name.title()} {version}"
+            "-v", "--version", action="version", version=f"{name.title()} {version}"
         )
 
         return argument, subparsers
@@ -85,15 +59,10 @@ class ControllerTaskManagers:
         task_manager_name: str,
         shortname: Optional[str] = None,
         description: Optional[str] = None,
-        debug: bool = False
+        debug: bool = False,
     ) -> Callable[[type[Task]], type[Task]]:
         def wrapper(cls: type[Task]) -> type[Task]:
-            task: ITask = cls(
-                name,
-                shortname,
-                description,
-                debug
-            )
+            task: ITask = cls(name, shortname, description, debug)
 
             task_manager: TaskManager = [
                 manager
@@ -122,9 +91,7 @@ class ControllerTaskManagers:
 
         else:
             args: Sequence[str] = [
-                key
-                for key, value in namespaces.__dict__.items()
-                if value is True
+                key for key, value in namespaces.__dict__.items() if value is True
             ]
 
             task_manager.execute(args)

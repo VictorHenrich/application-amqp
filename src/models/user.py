@@ -1,8 +1,4 @@
-from sqlalchemy import (
-    Column,
-    String,
-    DateTime
-)
+from sqlalchemy import Column, String, DateTime
 from datetime import datetime
 from patterns.models import BaseModel
 

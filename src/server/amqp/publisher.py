@@ -1,4 +1,3 @@
-
 from typing import Union, Mapping, Any
 from pika import ConnectionParameters, BasicProperties
 from pika.adapters.blocking_connection import BlockingChannel
@@ -13,9 +12,7 @@ class AMQPPublisher(AbstractAMQP):
         exchange: str,
         body: Union[str, bytes],
         routing_key: str = "",
-        properties: Mapping[str, Any] = {
-            "delivery_mode": 2
-        }
+        properties: Mapping[str, Any] = {"delivery_mode": 2},
     ) -> None:
         super().__init__(connection)
 
@@ -32,7 +29,7 @@ class AMQPPublisher(AbstractAMQP):
             exchange=self.__exchange,
             body=self.__body,
             routing_key=self.__routing_key,
-            properties=self.__properties
+            properties=self.__properties,
         )
 
-        print(f'Publisher {self.__publisher_name} triggered an event!')
+        print(f"Publisher {self.__publisher_name} triggered an event!")

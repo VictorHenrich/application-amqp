@@ -1,10 +1,4 @@
-from sqlalchemy import (
-    Column,
-    String,
-    DateTime,
-    ForeignKey,
-    Integer
-)
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from datetime import datetime
 from patterns.models import BaseModel
 from .user import User

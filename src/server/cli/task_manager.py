@@ -11,16 +11,10 @@ TasksMapping: TypeAlias = Mapping[str, ICommand[Any]]
 
 
 class TaskManager:
-    def __init__(
-        self, 
-        name: str,
-        subparser: _SubParsersAction
-    ) -> None:
+    def __init__(self, name: str, subparser: _SubParsersAction) -> None:
         self.__name: str = name
 
-        self.__argument: ArgumentParser = subparser.add_parser(
-            name
-        )
+        self.__argument: ArgumentParser = subparser.add_parser(name)
 
         self.__tasks: TasksMapping = {}
 
@@ -40,11 +34,7 @@ class TaskManager:
         if task.shortname:
             names.append(f"-{task.shortname}")
 
-        self.__argument.add_argument(
-            *names,
-            action="store_true",
-            help=task.description
-        )
+        self.__argument.add_argument(*names, action="store_true", help=task.description)
 
     def execute(self, args: Sequence[str]) -> None:
         try:
@@ -53,13 +43,12 @@ class TaskManager:
             task: ICommand[None] = [
                 task
                 for task_name, task in self.__tasks.items()
-                if task_name.upper() in handle_args   
+                if task_name.upper() in handle_args
             ][0]
 
             task.execute()
 
         except IndexError:
             self.__argument.print_help()
-            
-            sys.exit(0)
 
+            sys.exit(0)

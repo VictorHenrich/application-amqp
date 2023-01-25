@@ -3,15 +3,8 @@ from flask import Flask, request, Request
 from flask_restful import Api
 
 
-
 class HTTP(Api):
-    def __init__(
-        self,
-        host: str,
-        port: Union[str, int],
-        secret_key: str,
-        debug: bool
-    ):
+    def __init__(self, host: str, port: Union[str, int], secret_key: str, debug: bool):
         core: Flask = Flask(__name__)
 
         super().__init__(core)
@@ -40,11 +33,4 @@ class HTTP(Api):
         return self.__global_request
 
     def start(self) -> None:
-        self.__core.run(
-            host=self.__host,
-            port=self.__port,
-            debug=self.__debug
-        )
-
-
-
+        self.__core.run(host=self.__host, port=self.__port, debug=self.__debug)

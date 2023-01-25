@@ -6,7 +6,6 @@ from flask import Response
 from .response import BaseResponse
 
 
-
 Args: TypeAlias = Sequence[Any]
 Kwargs: TypeAlias = Mapping[str, Any]
 

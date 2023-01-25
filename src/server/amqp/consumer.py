@@ -6,7 +6,6 @@ from pika.spec import Basic, BasicProperties
 from .abstract_amqp import AbstractAMQP
 
 
-
 class AMQPConsumer(AbstractAMQP, ABC):
     def __init__(
         self,
@@ -14,7 +13,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         connection: ConnectionParameters,
         queue_name: str,
         ack: bool = True,
-        arguments: Optional[Mapping[str, Any]] = None
+        arguments: Optional[Mapping[str, Any]] = None,
     ) -> None:
         super().__init__(connection)
 
@@ -31,42 +30,38 @@ class AMQPConsumer(AbstractAMQP, ABC):
         channel: BlockingChannel = self.get_channel()
 
         channel.queue_declare(
-            queue=self.__queue_name,
-            durable=True,
-            arguments=self.__arguments
+            queue=self.__queue_name, durable=True, arguments=self.__arguments
         )
 
         channel.basic_consume(
             queue=self.__queue_name,
             auto_ack=self.__ack,
             on_message_callback=self.__on_message,
-            arguments=self.__arguments
+            arguments=self.__arguments,
         )
 
-        print(f'Consumer {self.__name} running in {self.connection.host}:{self.connection.port}')
+        print(
+            f"Consumer {self.__name} running in {self.connection.host}:{self.connection.port}"
+        )
 
         channel.start_consuming()
 
     def __on_message(
-        self, 
-        ch: BlockingChannel, 
-        method: Basic.Deliver, 
-        properties: BasicProperties, 
-        body: bytes
+        self,
+        ch: BlockingChannel,
+        method: Basic.Deliver,
+        properties: BasicProperties,
+        body: bytes,
     ) -> None:
 
         options: Mapping[str, Any] = {
             "channel": ch,
             "method": method,
-            "properties": properties
+            "properties": properties,
         }
 
         self.on_message_queue(body, **options)
 
     @abstractmethod
-    def on_message_queue(
-        self,
-        body: bytes,
-        **kwargs: Mapping[str, Any]
-    ) -> None:
+    def on_message_queue(self, body: bytes, **kwargs: Mapping[str, Any]) -> None:
         pass

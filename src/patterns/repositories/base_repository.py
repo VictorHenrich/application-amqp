@@ -11,5 +11,6 @@ class BaseRepository(ABC):
     def __init__(self, session: SessionParam) -> None:
         self.__session: SessionParam = session
 
+    @property
     def session(self) -> SessionParam:
         return self.__session

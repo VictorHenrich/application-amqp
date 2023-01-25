@@ -1,21 +1,15 @@
-
-__HTTP__ = {
-    "host": "localhost",
-    "port": 3000,
-    "debug": True,
-    "secret_key": "Teste"
-}
+__HTTP__ = {"host": "localhost", "port": 3000, "debug": True, "secret_key": "Teste"}
 
 __CLI__ = {
-    "managers": ['api', 'consumers', 'databases'],
+    "managers": ["api", "consumers", "databases"],
     "name": "CLI DRIVE API AMQP",
     "version": 1.3,
-    "description": "Terminal de comandos para a aplicação Drive API"
+    "description": "Terminal de comandos para a aplicação Drive API",
 }
 
 __DATABASES__ = {
     "bases": {
-        "main":{
+        "main": {
             "host": "localhost",
             "port": 5432,
             "username": "postgres",
@@ -23,7 +17,7 @@ __DATABASES__ = {
             "dbname": "banco_teste",
             "dialect": "postgresql",
             "drive_default": "psycopg2",
-            "drive_async": "asyncpg"
+            "drive_async": "asyncpg",
         }
     }
 }

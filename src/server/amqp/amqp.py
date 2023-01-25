@@ -1,16 +1,8 @@
-from typing import (
-    Mapping, 
-    Optional, 
-    Any,
-    Callable,
-    TypeAlias,
-    List
-)
+from typing import Mapping, Optional, Any, Callable, TypeAlias, List
 from threading import Thread
 from pika import ConnectionParameters
 
 from .consumer import AMQPConsumer
-
 
 
 TypeAMQPConsumer: TypeAlias = type[AMQPConsumer]
@@ -27,15 +19,11 @@ class AMQP:
         connection: ConnectionParameters,
         queue_name: str,
         ack: bool = True,
-        arguments: Optional[Mapping[str, Any]] = None
+        arguments: Optional[Mapping[str, Any]] = None,
     ) -> ReturnDecoratorAddConsumer:
         def wrapper(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
             consumer: AMQPConsumer = cls(
-                consumer_name,
-                connection,
-                queue_name,
-                ack,
-                arguments
+                consumer_name, connection, queue_name, ack, arguments
             )
 
             self.__consumers[consumer.name] = consumer
@@ -46,8 +34,7 @@ class AMQP:
 
     def start_consumers(self) -> None:
         threads: List[Thread] = [
-            Thread(target=consumer.start)
-            for consumer in self.__consumers.values()
+            Thread(target=consumer.start) for consumer in self.__consumers.values()
         ]
 
         [thread.start() for thread in threads]

@@ -1,10 +1,4 @@
-from typing import (
-    Union,
-    Optional,
-    TypeAlias,
-    Coroutine,
-    Awaitable
-)
+from typing import Union, Optional, TypeAlias, Coroutine, Awaitable
 from abc import ABC, abstractmethod
 import asyncio
 from colorama import Fore, Style
@@ -18,13 +12,13 @@ class Task(ABC):
         name: str,
         shortname: OptionalString,
         description: OptionalString,
-        debug: bool
+        debug: bool,
     ) -> None:
         self.__name: str = name
         self.__shortname: OptionalString = shortname
         self.__description: OptionalString = description
         self.__debug: bool = debug
-    
+
     @property
     def name(self) -> str:
         return self.__name
@@ -50,13 +44,13 @@ class Task(ABC):
 
     def __success_print(self) -> None:
         print(Fore.LIGHTGREEN_EX, Style.BRIGHT, Style.DIM)
-        print(f'### SUCCESS IN TASK {self.__name.upper()}\n')
+        print(f"### SUCCESS IN TASK {self.__name.upper()}\n")
 
         self.__reset_print()
 
     def __initial_print(self) -> None:
         print(Fore.LIGHTBLUE_EX, Style.BRIGHT, Style.DIM)
-        print(f'### RUNNING TASK {self.__name.upper()}\n')
+        print(f"### RUNNING TASK {self.__name.upper()}\n")
 
         self.__reset_print()
 

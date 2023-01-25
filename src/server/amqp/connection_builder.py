@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from pika import ConnectionParameters, PlainCredentials
 
 
-
 @dataclass
 class ConnectionBuilder:
     host: str = ""
@@ -33,7 +32,6 @@ class ConnectionBuilder:
             host=self.host,
             port=self.port,
             credentials=PlainCredentials(
-                username=self.username,
-                password=self.password
-            )
+                username=self.username, password=self.password
+            ),
         )

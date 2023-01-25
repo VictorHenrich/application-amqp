@@ -1,9 +1,5 @@
 from __future__ import annotations
-from typing import (
-    Optional,
-    Union,
-    TypeAlias
-)
+from typing import Optional, Union, TypeAlias
 from dataclasses import dataclass
 
 from .database import Database
@@ -51,10 +47,12 @@ class DatabaseBuilder:
 
     def set_dialect(self, dialect: str) -> DatabaseBuilder:
         self.dialect = dialect
-        
+
         return self
 
-    def set_drives(self, drive_default: OptionalString = None, drive_async: OptionalString = None) -> DatabaseBuilder:
+    def set_drives(
+        self, drive_default: OptionalString = None, drive_async: OptionalString = None
+    ) -> DatabaseBuilder:
         self.drive_default = drive_default
         self.drive_async = drive_async
 
@@ -75,9 +73,4 @@ class DatabaseBuilder:
 
         connection_url: str = f"{self.dialect}+{drive}://{self.username}:{self.password}@{self.host}:{self.port}/{self.dbname}"
 
-        return Database(
-            connection_url,
-            self.name,
-            self.debug,
-            self.async_
-        )
+        return Database(connection_url, self.name, self.debug, self.async_)

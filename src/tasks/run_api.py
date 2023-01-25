@@ -12,5 +12,5 @@ from server.cli import Task
 class TaskRunApi(Task):
     def run(self) -> None:
         import api.routes
-        
+
         app.http.start()
