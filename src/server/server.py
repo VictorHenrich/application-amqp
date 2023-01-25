@@ -1,14 +1,12 @@
 from dataclasses import dataclass
-from typing import Union, Mapping, Any, Sequence, TypeAlias, Callable, Optional
-from pathlib import Path
+from typing import Union, Mapping, Any, Sequence, TypeAlias, Callable, List
 
 from .http import HTTP
 from .cli import ControllerTaskManagers
 from .database import Databases, DatabaseBuilder, Database
 from .amqp import AMQP
 
-from patterns.service import IService
-from services import MainPathCreationService
+
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
@@ -24,6 +22,7 @@ class Server:
         self.__cli: ControllerTaskManagers = cli
         self.__databases: Databases = databases
         self.__amqp: AMQP = amqp
+        self.__listeners: List[FunctionListener] = []
 
     @property
     def http(self) -> HTTP:
@@ -41,16 +40,14 @@ class Server:
     def amqp(self) -> AMQP:
         return self.__amqp
 
+    def initialize(self, listener: FunctionListener) -> FunctionListener:
+        self.__listeners.append(listener)
+
+        return listener
+
     def start(self) -> None:
-        import tasks
-
-        main_path_creation_service: IService[
-            Optional[Path], None
-        ] = MainPathCreationService()
-
-        main_path_creation_service.execute()
-
-        self.__cli.execute()
+        for listener in self.__listeners:
+            listener()
 
 
 class ServerFactory:
