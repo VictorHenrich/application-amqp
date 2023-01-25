@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from start import app
 from patterns.repositories import ICreateRepository
-from patterns.service import IService
-
 from models import User
 from repositories import DriveCreateRepository, DriveCreateRepositoryParams
 
@@ -14,7 +12,7 @@ class DriveCreateServiceProps:
     user: User
 
 
-class DriveCreateService(IService):
+class DriveCreationService:
     def execute(self, args: DriveCreateServiceProps) -> None:
         with app.databases.create_session() as session:
             drive_create_repository: ICreateRepository[

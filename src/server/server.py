@@ -1,17 +1,14 @@
 from dataclasses import dataclass
-from typing import (
-    Union,
-    Mapping,
-    Any,
-    Sequence,
-    TypeAlias,
-    Callable,
-)
+from typing import Union, Mapping, Any, Sequence, TypeAlias, Callable, Optional
+from pathlib import Path
 
 from .http import HTTP
 from .cli import ControllerTaskManagers
 from .database import Databases, DatabaseBuilder, Database
 from .amqp import AMQP
+
+from patterns.service import IService
+from services import MainPathCreationService
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
@@ -46,6 +43,12 @@ class Server:
 
     def start(self) -> None:
         import tasks
+
+        main_path_creation_service: IService[
+            Optional[Path], None
+        ] = MainPathCreationService()
+
+        main_path_creation_service.execute()
 
         self.__cli.execute()
 

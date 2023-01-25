@@ -4,9 +4,6 @@ from server.http import HTTPController, BaseResponse, ResponseSuccess
 
 class DriveController(HTTPController):
     def post(self) -> BaseResponse:
-        file_content: bytes = app.http.global_request.data
+        file_content: bytes = app.http.global_request.json
 
-        with open("teste.txt", "wb") as file:
-            file.write(file_content)
-
-        return ResponseSuccess()
+        print(list(app.http.global_request.headers.keys()))
