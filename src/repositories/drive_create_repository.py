@@ -1,10 +1,9 @@
-from dataclasses import dataclass
-from patterns.repositories import BaseRepository, ICreateRepository
+from typing import Protocol
+from patterns.repositories import BaseRepository
 from models import User, Drive
 
 
-@dataclass
-class DriveCreateRepositoryParams:
+class DriveCreateRepositoryParams(Protocol):
     path: str
     filename: str
     user: User

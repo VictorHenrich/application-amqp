@@ -15,9 +15,13 @@ class DriveController(HTTPController):
     def post(self, auth: User) -> BaseResponse:
         data: Mapping[str, Any] = app.http.global_request.json
 
-        drive_upload_props: DriveUploadServiceProps = DriveUploadServiceProps(**data, user=auth)
+        drive_upload_props: DriveUploadServiceProps = DriveUploadServiceProps(
+            **data, user=auth
+        )
 
-        drive_upload_service: IService[DriveUploadServiceProps, None] = DriveUploadService()
+        drive_upload_service: IService[
+            DriveUploadServiceProps, None
+        ] = DriveUploadService()
 
         drive_upload_service.execute(drive_upload_props)
 

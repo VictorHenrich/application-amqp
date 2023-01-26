@@ -1,6 +1,7 @@
 from typing import Union, Mapping, Any
 from pika import ConnectionParameters, BasicProperties
 from pika.adapters.blocking_connection import BlockingChannel
+import json
 from .abstract_amqp import AbstractAMQP
 
 
@@ -10,7 +11,7 @@ class AMQPPublisher(AbstractAMQP):
         publisher_name: str,
         connection: ConnectionParameters,
         exchange: str,
-        body: Union[str, bytes],
+        body: Mapping[str, Any],
         routing_key: str = "",
         properties: Mapping[str, Any] = {"delivery_mode": 2},
     ) -> None:
@@ -18,16 +19,18 @@ class AMQPPublisher(AbstractAMQP):
 
         self.__publisher_name: str = publisher_name
         self.__exchange: str = exchange
-        self.__body: Union[str, bytes] = body
+        self.__body: Mapping[str, Any] = body
         self.__routing_key: str = routing_key
         self.__properties: BasicProperties = BasicProperties(**properties)
 
     def start(self) -> None:
         channel: BlockingChannel = self.get_channel()
 
+        body: bytes = json.dumps(self.__body).encode()
+
         channel.basic_publish(
             exchange=self.__exchange,
-            body=self.__body,
+            body=body,
             routing_key=self.__routing_key,
             properties=self.__properties,
         )

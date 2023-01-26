@@ -27,8 +27,7 @@ class UserAuthMiddleware(HTTPMiddleware):
             return {"auth": user}
 
         except ExpiredTokenError as error:
-            return  ResponseFailure(str(error))
+            return ResponseFailure(str(error))
 
         except UserNotFoundError:
             return ResponseFailure(str(error))
-

@@ -1,5 +1,6 @@
-from typing import Mapping, Any, Optional
+from typing import Mapping, Any, Optional, Type
 from abc import ABC, abstractmethod
+import json
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
@@ -12,8 +13,9 @@ class AMQPConsumer(AbstractAMQP, ABC):
         consumer_name: str,
         connection: ConnectionParameters,
         queue_name: str,
-        ack: bool = True,
-        arguments: Optional[Mapping[str, Any]] = None,
+        ack: bool,
+        arguments: Optional[Mapping[str, Any]],
+        data_class: Optional[Type],
     ) -> None:
         super().__init__(connection)
 
@@ -21,6 +23,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         self.__queue_name: str = queue_name
         self.__ack: bool = ack
         self.__arguments: Optional[Mapping[str, Any]] = arguments
+        self.__data_class: Optional[Type] = data_class
 
     @property
     def name(self) -> str:
@@ -60,8 +63,12 @@ class AMQPConsumer(AbstractAMQP, ABC):
             "properties": properties,
         }
 
-        self.on_message_queue(body, **options)
+        payload: Mapping[str, Any] = json.loads(body)
+
+        p: Any = payload if not self.__data_class else self.__data_class(**payload)
+
+        self.on_message_queue(p, **options)
 
     @abstractmethod
-    def on_message_queue(self, body: bytes, **kwargs: Mapping[str, Any]) -> None:
+    def on_message_queue(self, body: Any, **kwargs: Mapping[str, Any]) -> None:
         pass

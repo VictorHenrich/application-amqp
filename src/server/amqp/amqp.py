@@ -1,4 +1,4 @@
-from typing import Mapping, Optional, Any, Callable, TypeAlias, List
+from typing import Mapping, Optional, Any, Callable, TypeAlias, List, Type
 from threading import Thread
 from pika import ConnectionParameters
 
@@ -20,10 +20,11 @@ class AMQP:
         queue_name: str,
         ack: bool = True,
         arguments: Optional[Mapping[str, Any]] = None,
+        data_class: Optional[Type] = None,
     ) -> ReturnDecoratorAddConsumer:
         def wrapper(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
             consumer: AMQPConsumer = cls(
-                consumer_name, connection, queue_name, ack, arguments
+                consumer_name, connection, queue_name, ack, arguments, data_class
             )
 
             self.__consumers[consumer.name] = consumer
