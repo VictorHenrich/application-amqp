@@ -1,8 +1,8 @@
-from typing import Protocol, Generic, TypeVar
+from typing import Protocol, Generic, TypeVar, Union
 from patterns.models import BaseModel
 
 T = TypeVar("T")
-TR = TypeVar("TR", None, BaseModel)
+TR = TypeVar("TR", bound=Union[None, BaseModel])
 
 
 class IFindRepository(Protocol, Generic[T, TR]):

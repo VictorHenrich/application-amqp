@@ -7,8 +7,6 @@ from .database import Databases, DatabaseBuilder, Database
 from .amqp import AMQP
 
 
-
-
 MappingDict: TypeAlias = Mapping[str, Any]
 FunctionListener: TypeAlias = Callable[[None], None]
 

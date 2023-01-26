@@ -1,6 +1,6 @@
+from typing import Union
 from dataclasses import dataclass
 from base64 import b64decode
-from typing import BinaryIO
 from pathlib import Path
 
 from models import User
@@ -10,7 +10,7 @@ from utils.constants import __PATH_DRIVES__
 @dataclass
 class DriveUploadServiceProps:
     filename: str
-    content: str | BinaryIO
+    content: Union[str, bytes]
     user: User
 
 

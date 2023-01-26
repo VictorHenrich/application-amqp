@@ -1,10 +1,10 @@
-from dataclasses import dataclass
+from typing import Protocol
 from patterns.repositories import BaseRepository
+from exceptions import UserNotFoundError
 from models import User
 
 
-@dataclass
-class UserAuthRepositoryProps:
+class UserAuthRepositoryProps(Protocol):
     email: str
     password: str
 
@@ -12,17 +12,15 @@ class UserAuthRepositoryProps:
 class UserAuthRepository(BaseRepository):
     def auth(self, args: UserAuthRepositoryProps) -> User:
         user: User = (
-            self
-            .session
-            .query(User)
+            self.session.query(User)
             .filter(
-                User.email._upper() == args.email.upper(),
+                User.email == args.email,
                 User.password == args.password,
             )
             .first()
         )
 
         if not user:
-            raise Exception("User not found!")
+            raise UserNotFoundError()
 
         return user

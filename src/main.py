@@ -5,7 +5,6 @@ from services import MainPathCreationService
 from start import app
 
 
-
 @app.initialize
 def create_drives_paths():
     main_path_creation_service: IService[
@@ -20,7 +19,6 @@ def init_cli():
     import tasks
 
     app.cli.execute()
-
 
 
 if __name__ == "__main__":

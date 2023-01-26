@@ -1,10 +1,14 @@
 from abc import ABC
 import json
-from typing import Optional, Any, Mapping, TypeAlias
+from io import IOBase
+from typing import Optional, Any, Mapping, TypeAlias, Union, IO, Sequence, Union
 from flask import Response
+from utils.constants import __MIME_TYPES__
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
+ContentFile: TypeAlias = Union[str, bytes, IO]
+StreamFile: TypeAlias = Sequence[Union[bytes, str]]
 
 
 class BaseResponse(Response, ABC):
@@ -68,4 +72,48 @@ class ResponseUnauthorized(BaseResponse):
 
 
 class ResponseIO(Response):
-    pass
+    def __init__(
+        self,
+        content: ContentFile,
+        filename: str,
+        status = 200,
+        headers: MappingDict = None,
+    ) -> None:
+        [_, filetype] = filename.split('.')
+
+        response: StreamFile = self.__handle_content(content)
+
+        mimetype: str = __MIME_TYPES__[filetype]
+
+        headers_: Mapping[str, Any] = {
+            "Content-Type": mimetype,
+            "Content-Disposition": f"attachment; filename='{filename}'",
+            **(headers or {})
+        }
+
+        super().__init__(response, status, headers_)
+
+    
+    def __handle_content(self, content: ContentFile) -> StreamFile:
+        if isinstance(content, IOBase):
+            return self.__handle_content_io(content)
+
+        if isinstance(content, (str, bytes)):
+            return  self.__handle_content_default(content)
+
+        else:
+            raise Exception('Invalid content type')
+
+
+    def __handle_content_io(self, content: IO) -> StreamFile:
+        if not content.readable():
+            raise Exception('IO content needs to be readable')
+
+        return content.readlines()
+
+    def __handle_content_default(self, content: Union[str, bytes]) -> StreamFile:
+        if type(content) is str:
+            return content.split()
+
+        if type(content) is bytes:
+            return content.split()

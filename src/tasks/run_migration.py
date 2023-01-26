@@ -13,4 +13,4 @@ class TaskRunMigration(Task):
     def run(self) -> None:
         import models
 
-        app.databases.migrate()
+        app.databases.migrate(drop_tables=False)
