@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Union, Mapping, Any, Sequence, TypeAlias, Callable, List
+from typing import Union, Mapping, Any, Sequence, TypeAlias, Callable, List, Optional
+from pika import ConnectionParameters
 
 from .http import HTTP
 from .cli import ControllerTaskManagers
 from .database import Databases, DatabaseBuilder, Database
-from .amqp import AMQP
+from .amqp import AMQP, ConnectionBuilder
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
@@ -102,8 +103,21 @@ class ServerFactory:
         return databases
 
     @staticmethod
-    def __create_amqp() -> AMQP:
-        return AMQP()
+    def __create_amqp(default_connection: Optional[Mapping[str, Any]]) -> AMQP:
+        connection: Optional[ConnectionParameters] = None
+
+        if default_connection:
+            connection = (
+                ConnectionBuilder()
+                .set_host(default_connection["host"])
+                .set_port(default_connection["port"])
+                .set_credentials(
+                    default_connection["username"], default_connection["password"]
+                )
+                .build()
+            )
+
+        return AMQP(connection)
 
     @classmethod
     def create(
@@ -111,7 +125,7 @@ class ServerFactory:
         http_props: MappingDict,
         cli_props: MappingDict,
         databases_props: MappingDict,
-        amqp_props: MappingDict = {},
+        amqp_props: MappingDict,
     ) -> Server:
         http: HTTP = cls.__create_http(**http_props)
 
@@ -119,6 +133,6 @@ class ServerFactory:
 
         databases: Databases = cls.__create_databases(**databases_props)
 
-        amqp: AMQP = cls.__create_amqp()
+        amqp: AMQP = cls.__create_amqp(**amqp_props)
 
         return Server(http, cli, databases, amqp)

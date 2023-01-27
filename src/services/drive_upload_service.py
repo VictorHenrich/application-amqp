@@ -1,12 +1,13 @@
-from typing import Union
+from typing import Union, Mapping, Any
 from dataclasses import dataclass
 from base64 import b64decode
 from pathlib import Path
-from pika import ConnectionParameters
-from server.amqp import AMQPPublisher, ConnectionBuilder
+
+from start import app
+from server.amqp import AMQPPublisher
 from models import User
 from utils.constants import __PATH_DRIVES__
-from consumers import PayloadDriveCreation
+from consumers import ConsumerDriveCreationPayload
 
 
 @dataclass
@@ -25,19 +26,15 @@ class DriveUploadService:
         with open(drive_path, "wb") as file:
             file.write(drive_content)
 
-        connection: ConnectionParameters = (
-            ConnectionBuilder()
-            .set_host("localhost")
-            .set_port(5672)
-            .set_credentials("guest", "guest")
-            .build()
-        )
+        publisher_payload: Mapping[str, Any] = ConsumerDriveCreationPayload(
+            args.filename, str(drive_path), args.user.id_uuid
+        ).__dict__
 
         publisher: AMQPPublisher = AMQPPublisher(
             "publisher_drive_creation",
-            connection,
+            app.amqp.default_connection,
             "exchange_drive_creation",
-            PayloadDriveCreation(args.filename, str(drive_path), args.user.id_uuid).__dict__,
+            publisher_payload,
         )
 
         publisher.start()

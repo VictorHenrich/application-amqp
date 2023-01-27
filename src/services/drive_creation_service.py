@@ -20,14 +20,14 @@ class DriveCreateServiceProps:
 @dataclass
 class UserFindProps:
     user_uuid: str
-    
+
 
 @dataclass
 class DriveCreateProps:
     path: str
     filename: str
     user: User
-    
+
 
 class DriveCreationService:
     def execute(self, args: DriveCreateServiceProps) -> None:
@@ -44,8 +44,8 @@ class DriveCreationService:
                 DriveCreateRepositoryProps, None
             ] = DriveCreateRepository(session)
 
-            drive_create_params: DriveCreateRepositoryProps = (
-                DriveCreateProps(args.path, args.filename, user)
+            drive_create_params: DriveCreateRepositoryProps = DriveCreateProps(
+                args.path, args.filename, user
             )
 
             drive_create_repository.create(drive_create_params)

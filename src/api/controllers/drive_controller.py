@@ -26,3 +26,7 @@ class DriveController(HTTPController):
         drive_upload_service.execute(drive_upload_props)
 
         return ResponseSuccess()
+
+    @userAuthMiddleware.apply()
+    def get(self, auth: User) -> BaseResponse:
+        pass
