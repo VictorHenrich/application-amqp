@@ -1,3 +1,3 @@
-from .drive_create_repository import DriveCreateRepository, DriveCreateRepositoryParams
+from .drive_create_repository import DriveCreateRepository, DriveCreateRepositoryProps
 from .user_auth_repository import UserAuthRepository, UserAuthRepositoryProps
 from .user_find_repository import UserFindRepository, UserFindRepositoryProps

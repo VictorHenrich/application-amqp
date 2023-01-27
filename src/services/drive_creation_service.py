@@ -1,17 +1,17 @@
-from typing import Protocol
 from dataclasses import dataclass
 from start import app
 from patterns.repositories import ICreateRepository, IFindRepository
 from models import User
 from repositories import (
     DriveCreateRepository,
-    DriveCreateRepositoryParams,
+    DriveCreateRepositoryProps,
     UserFindRepository,
     UserFindRepositoryProps,
 )
 
 
-class DriveCreateServiceProps(Protocol):
+@dataclass
+class DriveCreateServiceProps:
     filename: str
     path: str
     user_uuid: str
@@ -20,7 +20,14 @@ class DriveCreateServiceProps(Protocol):
 @dataclass
 class UserFindProps:
     user_uuid: str
+    
 
+@dataclass
+class DriveCreateProps:
+    path: str
+    filename: str
+    user: User
+    
 
 class DriveCreationService:
     def execute(self, args: DriveCreateServiceProps) -> None:
@@ -34,11 +41,11 @@ class DriveCreationService:
             user: User = user_find_repository.find(user_find_props)
 
             drive_create_repository: ICreateRepository[
-                DriveCreateRepositoryParams, None
+                DriveCreateRepositoryProps, None
             ] = DriveCreateRepository(session)
 
-            drive_create_params: DriveCreateRepositoryParams = (
-                DriveCreateRepositoryParams(args.path, args.filename, user)
+            drive_create_params: DriveCreateRepositoryProps = (
+                DriveCreateProps(args.path, args.filename, user)
             )
 
             drive_create_repository.create(drive_create_params)

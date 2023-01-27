@@ -14,4 +14,4 @@ class BaseModel(database.Model):
     id: int = Column(
         Integer, primary_key=True, autoincrement=True, nullable=False, unique=True
     )
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda: str(uuid4()))

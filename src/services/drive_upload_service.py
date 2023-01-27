@@ -37,7 +37,7 @@ class DriveUploadService:
             "publisher_drive_creation",
             connection,
             "exchange_drive_creation",
-            PayloadDriveCreation(args.filename, drive_path, args.user.id_uuid),
+            PayloadDriveCreation(args.filename, str(drive_path), args.user.id_uuid).__dict__,
         )
 
         publisher.start()

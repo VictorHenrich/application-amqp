@@ -1,3 +1,4 @@
+from typing import Mapping, Any
 from pika import ConnectionParameters
 from dataclasses import dataclass
 from start import app
@@ -29,8 +30,7 @@ connection: ConnectionParameters = (
     data_class=PayloadDriveCreation,
 )
 class ConsumerDriveCreation(AMQPConsumer):
-    def on_message_queue(self, body: PayloadDriveCreation) -> None:
-
+    def on_message_queue(self, body: PayloadDriveCreation, **kwargs: Mapping[str, Any]) -> None:        
         drive_creation_props: DriveCreateServiceProps = DriveCreateServiceProps(
             body.filename, body.path, body.user_uuid
         )
