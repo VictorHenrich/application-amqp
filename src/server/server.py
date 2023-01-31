@@ -6,6 +6,7 @@ from .http import HTTP
 from .cli import ControllerTaskManagers
 from .database import Databases, DatabaseBuilder, Database
 from .amqp import AMQP, ConnectionBuilder
+from .smtp import SMTPEmail, SMTPEmailBuilder
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
@@ -15,12 +16,18 @@ FunctionListener: TypeAlias = Callable[[None], None]
 @dataclass
 class Server:
     def __init__(
-        self, http: HTTP, cli: ControllerTaskManagers, databases: Databases, amqp: AMQP
+        self,
+        http: HTTP,
+        cli: ControllerTaskManagers,
+        databases: Databases,
+        amqp: AMQP,
+        smtp: SMTPEmail,
     ) -> None:
         self.__http: HTTP = http
         self.__cli: ControllerTaskManagers = cli
         self.__databases: Databases = databases
         self.__amqp: AMQP = amqp
+        self.__smtp: SMTPEmail = smtp
         self.__listeners: List[FunctionListener] = []
 
     @property
@@ -38,6 +45,10 @@ class Server:
     @property
     def amqp(self) -> AMQP:
         return self.__amqp
+
+    @property
+    def smtp(self) -> SMTPEmail:
+        return self.__smtp
 
     def initialize(self, listener: FunctionListener) -> FunctionListener:
         self.__listeners.append(listener)
@@ -103,7 +114,7 @@ class ServerFactory:
         return databases
 
     @staticmethod
-    def __create_amqp(default_connection: Optional[Mapping[str, Any]]) -> AMQP:
+    def __create_amqp(default_connection: Optional[MappingDict]) -> AMQP:
         connection: Optional[ConnectionParameters] = None
 
         if default_connection:
@@ -119,6 +130,17 @@ class ServerFactory:
 
         return AMQP(connection)
 
+    @staticmethod
+    def __create_smtp(
+        host: str,
+        port: Union[str, int],
+        username: str,
+        password: str,
+        ssl: bool,
+        tls: bool,
+    ) -> SMTPEmail:
+        return SMTPEmail(host, port, (username, password), ssl, tls)
+
     @classmethod
     def create(
         cls,
@@ -126,6 +148,7 @@ class ServerFactory:
         cli_props: MappingDict,
         databases_props: MappingDict,
         amqp_props: MappingDict,
+        smtp_props: MappingDict,
     ) -> Server:
         http: HTTP = cls.__create_http(**http_props)
 
@@ -135,4 +158,6 @@ class ServerFactory:
 
         amqp: AMQP = cls.__create_amqp(**amqp_props)
 
-        return Server(http, cli, databases, amqp)
+        smtp: SMTPEmail = cls.__create_smtp(**smtp_props)
+
+        return Server(http, cli, databases, amqp, smtp)

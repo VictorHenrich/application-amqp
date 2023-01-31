@@ -6,7 +6,7 @@ from smtplib import SMTP, SMTP_SSL
 
 Port: TypeAlias = Union[str, int]
 SMTPServer: TypeAlias = Union[SMTP, SMTP_SSL]
-Credentials: Optional[Sequence[str]]
+Credentials: TypeAlias = Optional[Sequence[str]]
 
 
 class SMTPEmail:

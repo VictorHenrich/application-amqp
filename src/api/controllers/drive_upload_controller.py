@@ -10,7 +10,7 @@ from api.middlewares import UserAuthMiddleware
 userAuthMiddleware: UserAuthMiddleware = UserAuthMiddleware()
 
 
-class DriveController(HTTPController):
+class DriveUploadController(HTTPController):
     @userAuthMiddleware.apply()
     def post(self, auth: User) -> BaseResponse:
         data: Mapping[str, Any] = app.http.global_request.json
@@ -26,7 +26,3 @@ class DriveController(HTTPController):
         drive_upload_service.execute(drive_upload_props)
 
         return ResponseSuccess()
-
-    @userAuthMiddleware.apply()
-    def get(self, auth: User) -> BaseResponse:
-        pass

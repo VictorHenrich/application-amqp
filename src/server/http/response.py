@@ -97,7 +97,7 @@ class ResponseIO(Response):
         if isinstance(content, IOBase):
             return self.__handle_content_io(content)
 
-        if isinstance(content, (str, bytes)):
+        if isinstance(content, (str, bytes, Sequence)):
             return self.__handle_content_default(content)
 
         else:
@@ -115,3 +115,6 @@ class ResponseIO(Response):
 
         if type(content) is bytes:
             return content.split()
+
+        if isinstance(content, Sequence):
+            return content

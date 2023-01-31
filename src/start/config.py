@@ -33,3 +33,13 @@ __AMQP__ = {
         "password": "guest",
     }
 }
+
+
+__SMTP__ = {
+    "host": "",
+    "port": 0,
+    "username": "",
+    "password": "",
+    "tls": False,
+    "ssl": False,
+}

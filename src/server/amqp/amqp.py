@@ -3,6 +3,7 @@ from threading import Thread
 from pika import ConnectionParameters
 
 from .consumer import AMQPConsumer
+from .publisher import AMQPPublisher
 
 
 TypeAMQPConsumer: TypeAlias = type[AMQPConsumer]
@@ -18,6 +19,26 @@ class AMQP:
     @property
     def default_connection(self) -> ConnectionParametersOptional:
         return self.__default_connection
+
+    def create_publisher(
+        self,
+        publisher_name: str,
+        exchange: str,
+        body: Mapping[str, Any],
+        connection: Optional[ConnectionParameters] = None,
+        routing_key: str = "",
+        properties: Mapping[str, Any] = {"delivery_mode": 2},
+    ) -> None:
+        publiser: AMQPPublisher = AMQPPublisher(
+            publisher_name,
+            connection or self.__default_connection,
+            exchange,
+            body,
+            routing_key,
+            properties,
+        )
+
+        publiser.start()
 
     def add_consumer(
         self,

@@ -12,8 +12,8 @@ class AMQPPublisher(AbstractAMQP):
         connection: ConnectionParameters,
         exchange: str,
         body: Mapping[str, Any],
-        routing_key: str = "",
-        properties: Mapping[str, Any] = {"delivery_mode": 2},
+        routing_key: str,
+        properties: Mapping[str, Any],
     ) -> None:
         super().__init__(connection)
 

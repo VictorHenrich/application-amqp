@@ -4,10 +4,9 @@ from base64 import b64decode
 from pathlib import Path
 
 from start import app
-from server.amqp import AMQPPublisher
 from models import User
 from utils.constants import __PATH_DRIVES__
-from consumers import ConsumerDriveCreationPayload
+import consumers
 
 
 @dataclass
@@ -26,15 +25,10 @@ class DriveUploadService:
         with open(drive_path, "wb") as file:
             file.write(drive_content)
 
-        publisher_payload: Mapping[str, Any] = ConsumerDriveCreationPayload(
+        publisher_payload: Mapping[str, Any] = consumers.ConsumerDriveCreationPayload(
             args.filename, str(drive_path), args.user.id_uuid
         ).__dict__
 
-        publisher: AMQPPublisher = AMQPPublisher(
-            "publisher_drive_creation",
-            app.amqp.default_connection,
-            "exchange_drive_creation",
-            publisher_payload,
+        app.amqp.create_publisher(
+            "publisher_drive_creation", "exchange_drive_creation", publisher_payload
         )
-
-        publisher.start()

@@ -1,11 +1,10 @@
-from typing import Mapping, Any, Sequence
+from typing import Mapping, Any, Sequence, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 
 from start import app
-from server.amqp import AMQPPublisher
 from patterns.repositories import IFindRepository
-from consumers import ConsumerAccessCreationPayload
+# from consumers import ConsumerAccessCreationPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
 
@@ -23,7 +22,7 @@ class DriveFindProps:
 
 
 class DriveDownloadService:
-    def execute(self, args: DriveDownloadServiceProps) -> Sequence[bytes]:
+    def execute(self, args: DriveDownloadServiceProps) -> Tuple[Sequence[bytes], str]:
         with app.databases.create_session() as session:
             drive_find_props: DriveFindRepositoryProps = DriveFindProps(
                 args.drive_uuid, args.user.id_uuid
@@ -38,17 +37,14 @@ class DriveDownloadService:
             full_path: Path = Path() / args.user.path / drive.path
 
             with open(full_path, "rb") as file:
-                publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
-                    args.user.id_uuid, args.drive_uuid, "download"
-                ).__dict__
+                # publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
+                #     args.user.id_uuid, args.drive_uuid, "download"
+                # ).__dict__
 
-                publisher: AMQPPublisher = AMQPPublisher(
-                    "publisher_access_creation",
-                    app.amqp.default_connection,
-                    "exchange_access_creation",
-                    publisher_payload,
-                )
+                # app.amqp.create_publisher(
+                #     "publisher_access_creation",
+                #     "exchange_access_creation",
+                #     publisher_payload,
+                # )
 
-                publisher.start()
-
-                return file.readlines()
+                return file.readlines(), file.name
