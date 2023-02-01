@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from start import app
 from server.amqp import AMQPConsumer
 from patterns.service import IService
-from services import AccessCreationService, AccessCreationServiceProps
+from services.access_creation_service import AccessCreationService, AccessCreationServiceProps
 
 
 @dataclass

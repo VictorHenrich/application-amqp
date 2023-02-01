@@ -67,3 +67,5 @@ class AccessCreationService:
             ] = AccessCreateRepository(session)
 
             access_create_repository.create(access_create_props)
+
+            session.commit()

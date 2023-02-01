@@ -57,12 +57,12 @@ class SMTPEmail:
     ) -> None:
         self.__finish()
 
-    def send(self, from_: str, to: Sequence[str], title: str, content: str) -> None:
+    def send(self, to: Sequence[str], title: str, content: str, from_: Optional[str]) -> None:
         message: EmailMessage = EmailMessage()
 
         message["Subject"] = title
 
-        message["From"] = from_
+        message["From"] = from_ or list(self.__credentials)[0]
 
         message["To"] = ",".join(to)
 

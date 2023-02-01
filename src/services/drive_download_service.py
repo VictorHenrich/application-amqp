@@ -1,4 +1,4 @@
-from typing import Tuple, BinaryIO
+from typing import Tuple, BinaryIO, Mapping, Any
 from io import BytesIO
 from dataclasses import dataclass
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 from start import app
 from patterns.repositories import IFindRepository
 
-# from consumers import ConsumerAccessCreationPayload
+from consumers.consumer_access_creation import ConsumerAccessCreationPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
 
@@ -40,14 +40,14 @@ class DriveDownloadService:
 
             with open(full_path, "rb") as file:
 
-                # publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
-                #     args.user.id_uuid, args.drive_uuid, "download"
-                # ).__dict__
+                publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
+                    args.user.id_uuid, args.drive_uuid, "download"
+                ).__dict__
 
-                # app.amqp.create_publisher(
-                #     "publisher_access_creation",
-                #     "exchange_access_creation",
-                #     publisher_payload,
-                # )
+                app.amqp.create_publisher(
+                    "publisher_access_creation",
+                    "exchange_access_creation",
+                    publisher_payload,
+                )
 
                 return BytesIO(file.read()), file.name
