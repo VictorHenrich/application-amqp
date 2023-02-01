@@ -1,9 +1,11 @@
-from typing import Mapping, Any, Sequence, Tuple
+from typing import Tuple, BinaryIO
+from io import BytesIO
 from dataclasses import dataclass
 from pathlib import Path
 
 from start import app
 from patterns.repositories import IFindRepository
+
 # from consumers import ConsumerAccessCreationPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
@@ -22,7 +24,7 @@ class DriveFindProps:
 
 
 class DriveDownloadService:
-    def execute(self, args: DriveDownloadServiceProps) -> Tuple[Sequence[bytes], str]:
+    def execute(self, args: DriveDownloadServiceProps) -> Tuple[BinaryIO, str]:
         with app.databases.create_session() as session:
             drive_find_props: DriveFindRepositoryProps = DriveFindProps(
                 args.drive_uuid, args.user.id_uuid
@@ -37,6 +39,7 @@ class DriveDownloadService:
             full_path: Path = Path() / args.user.path / drive.path
 
             with open(full_path, "rb") as file:
+
                 # publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
                 #     args.user.id_uuid, args.drive_uuid, "download"
                 # ).__dict__
@@ -47,4 +50,4 @@ class DriveDownloadService:
                 #     publisher_payload,
                 # )
 
-                return file.readlines(), file.name
+                return BytesIO(file.read()), file.name
