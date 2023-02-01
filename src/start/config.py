@@ -36,10 +36,10 @@ __AMQP__ = {
 
 
 __SMTP__ = {
-    "host": "",
-    "port": 0,
+    "host": "smtp.gmail.com",
+    "port": 587,
     "username": "",
     "password": "",
-    "tls": False,
+    "tls": True,
     "ssl": False,
 }

@@ -6,7 +6,7 @@ from pathlib import Path
 from start import app
 from patterns.repositories import IFindRepository
 
-from consumers.consumer_access_creation import ConsumerAccessCreationPayload
+from consumers import ConsumerAccessCreationPayload, ConsumerEmailSendingPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
 
@@ -40,14 +40,31 @@ class DriveDownloadService:
 
             with open(full_path, "rb") as file:
 
-                publisher_payload: Mapping[str, Any] = ConsumerAccessCreationPayload(
+                publisher_access_creation_payload: Mapping[
+                    str, Any
+                ] = ConsumerAccessCreationPayload(
                     args.user.id_uuid, args.drive_uuid, "download"
                 ).__dict__
 
                 app.amqp.create_publisher(
                     "publisher_access_creation",
                     "exchange_access_creation",
-                    publisher_payload,
+                    publisher_access_creation_payload,
                 )
 
-                return BytesIO(file.read()), file.name
+                publisher_email_seding_payload: Mapping[
+                    str, Any
+                ] = ConsumerEmailSendingPayload(
+                    args.user.email,
+                    "Acesso na plataforma DRIVE",
+                    f"Um download foi realizado com um usuário autenticado ({args.user.name.upper()}) "
+                    + f"\nRealizado download do arquivo {drive.name}",
+                ).__dict__
+
+                app.amqp.create_publisher(
+                    "publisher_email_sending",
+                    "exchange_email_sending",
+                    publisher_email_seding_payload,
+                )
+
+                return BytesIO(file.read()), drive.name
