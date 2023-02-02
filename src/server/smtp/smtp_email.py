@@ -22,9 +22,7 @@ class SMTPEmail:
 
     def __create_server(self) -> SMTPServer:
         if self.__ssl and self.__tls:
-            return SMTP_SSL(
-                self.__host, self.__port, context=create_default_context()
-            )
+            return SMTP_SSL(self.__host, self.__port, context=create_default_context())
 
         else:
             return SMTP(self.__host, self.__port)

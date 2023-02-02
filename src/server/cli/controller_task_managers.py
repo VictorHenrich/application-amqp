@@ -64,13 +64,9 @@ class ControllerTaskManagers:
         def wrapper(cls: type[Task]) -> type[Task]:
             task: ITask = cls(name, shortname, description, debug)
 
-            task_manager: TaskManager = [
-                manager
-                for manager_name, manager in self.__managers.items()
-                if manager_name.upper() == task_manager_name.upper()
-            ][0]
-
-            task_manager.add_task(task)
+            for manager_name, task_manager in self.__managers.items():
+                if manager_name.upper() == task_manager_name.upper():
+                    task_manager.add_task(task)
 
             return cls
 

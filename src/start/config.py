@@ -1,25 +1,36 @@
-__HTTP__ = {"host": "localhost", "port": 3000, "debug": True, "secret_key": "Teste"}
+from utils import EnvUtil
+
+
+env_values = EnvUtil.get_values()
+
+
+__HTTP__ = {
+    "host": env_values["HTTP_HOST"],
+    "port": env_values["HTTP_PORT"],
+    "debug": bool(eval(env_values["HTTP_DEBUG"])),
+    "secret_key": env_values["HTTP_SECRET_KEY"],
+}
 
 
 __CLI__ = {
-    "managers": ["api", "consumers", "databases"],
-    "name": "CLI DRIVE API AMQP",
-    "version": 1.3,
-    "description": "Terminal de comandos para a aplicação Drive API",
+    "managers": env_values["CLI_MANAGERS"].split(","),
+    "name": env_values["CLI_NAME"],
+    "version": float(env_values["CLI_VERSION"]),
+    "description": env_values["CLI_DESCRIPTION"],
 }
 
 
 __DATABASES__ = {
     "bases": {
         "main": {
-            "host": "localhost",
-            "port": 5432,
-            "username": "postgres",
-            "password": "1234",
-            "dbname": "banco_teste",
-            "dialect": "postgresql",
-            "drive_default": "psycopg2",
-            "drive_async": "asyncpg",
+            "host": env_values["DATABASE_MAIN_HOST"],
+            "port": env_values["DATABASE_MAIN_PORT"],
+            "username": env_values["DATABASE_MAIN_USERNAME"],
+            "password": env_values["DATABASE_MAIN_PASSWORD"],
+            "dbname": env_values["DATABASE_MAIN_DBNAME"],
+            "dialect": env_values["DATABASE_MAIN_DIALECT"],
+            "drive_default": env_values["DATABASE_MAIN_DRIVE_DEFAULT"],
+            "drive_async": env_values["DATABASE_MAIN_DRIVE_ASYNC"],
         }
     }
 }
@@ -27,19 +38,19 @@ __DATABASES__ = {
 
 __AMQP__ = {
     "default_connection": {
-        "host": "localhost",
-        "port": 5672,
-        "username": "guest",
-        "password": "guest",
+        "host": env_values["AMQP_HOST"],
+        "port": env_values["AMQP_PORT"],
+        "username": env_values["AMQP_USERNAME"],
+        "password": env_values["AMQP_PASSWORD"],
     }
 }
 
 
 __SMTP__ = {
-    "host": "smtp.gmail.com",
-    "port": 587,
-    "username": "",
-    "password": "",
-    "tls": True,
-    "ssl": False,
+    "host": env_values["SMTP_HOST"],
+    "port": env_values["SMTP_PORT"],
+    "username": env_values["SMTP_USERNAME"],
+    "password": env_values["SMTP_PASSWORD"],
+    "tls": bool(eval(env_values["SMTP_TLS"])),
+    "ssl": bool(eval(env_values["SMTP_SSL"])),
 }
