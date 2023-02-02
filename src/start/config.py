@@ -13,7 +13,7 @@ __HTTP__ = {
 
 
 __CLI__ = {
-    "managers": env_values["CLI_MANAGERS"].split(","),
+    "managers": ["api", "databases", "consumers"],
     "name": env_values["CLI_NAME"],
     "version": float(env_values["CLI_VERSION"]),
     "description": env_values["CLI_DESCRIPTION"],

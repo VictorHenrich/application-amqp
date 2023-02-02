@@ -79,11 +79,9 @@ class ResponseIO(Response):
         status=200,
         headers: MappingDict = None,
     ) -> None:
-        [_, filetype] = filename.split(".")
-
         response: StreamFile = self.__handle_content(content)
 
-        mimetype: str = __MIME_TYPES__[filetype]
+        mimetype: str = self.__get_mimetype(filename)
 
         headers_: Mapping[str, Any] = {
             "Content-Type": mimetype,
@@ -92,6 +90,15 @@ class ResponseIO(Response):
         }
 
         super().__init__(response, status, headers_)
+
+    def __get_mimetype(self, filename: str) -> str:
+        _, filetype = filename.split(".")
+
+        try:
+            return __MIME_TYPES__[filetype]
+
+        except KeyError:
+            return __MIME_TYPES__["bin"]
 
     def __handle_content(self, content: ContentFile) -> StreamFile:
         if isinstance(content, IOBase):
