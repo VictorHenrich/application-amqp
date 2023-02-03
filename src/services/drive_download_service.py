@@ -55,7 +55,7 @@ class DriveDownloadService:
                 publisher_email_seding_payload: Mapping[
                     str, Any
                 ] = ConsumerEmailSendingPayload(
-                    args.user.email,
+                    (args.user.email, ),
                     "Acesso na plataforma DRIVE",
                     f"Um download foi realizado com um usuário autenticado ({args.user.name.upper()}) "
                     + f"\nRealizado download do arquivo {drive.name}",

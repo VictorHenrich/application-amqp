@@ -1,8 +1,9 @@
 from typing import TypeAlias, Union, Sequence, Optional, Type
 from ssl import create_default_context
 from email.message import EmailMessage
-from email.mime.text import MIMEText
 from smtplib import SMTP, SMTP_SSL
+
+from utils.constants import __MIME_TYPES__
 
 SMTPServer: TypeAlias = Union[SMTP, SMTP_SSL]
 Credentials: TypeAlias = Optional[Sequence[str]]
@@ -49,6 +50,6 @@ class SMTPEmail:
 
         message["To"] = ",".join(to)
 
-        message.attach(MIMEText(content, "html"))
+        message.set_payload(content.encode())
 
-        self.__server.sendmail(message["From"], message["To"], message)
+        self.__server.send_message(message)
