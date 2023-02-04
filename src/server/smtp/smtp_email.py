@@ -43,12 +43,12 @@ class SMTPEmail:
             self.__server.login(username, password)
 
     def send(
-        self, 
-        to: Sequence[str], 
-        title: str, 
-        content: str, 
+        self,
+        to: Sequence[str],
+        title: str,
+        content: str,
         from_: Optional[str] = None,
-        attachments: Sequence[Attachment] = None
+        attachments: Sequence[Attachment] = None,
     ) -> None:
         self.__start()
 
@@ -64,11 +64,14 @@ class SMTPEmail:
 
         if attachments:
             for attachment in attachments:
-                att: MIMEBase = MIMEBase(*(__MIME_TYPES__['stream'].split('/')))
+                att: MIMEBase = MIMEBase(*(__MIME_TYPES__["stream"].split("/")))
 
-                att.add_header('Content-Disposition', f'attachment; filename="{attachment["filename"]}"')
+                att.add_header(
+                    "Content-Disposition",
+                    f'attachment; filename="{attachment["filename"]}"',
+                )
 
-                att.set_payload(attachment['content'])
+                att.set_payload(attachment["content"])
 
                 encode_base64(att)
 

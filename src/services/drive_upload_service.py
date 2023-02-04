@@ -6,6 +6,7 @@ from pathlib import Path
 from start import app
 from models import User
 from utils.constants import __PATH_DRIVES__
+from utils import FileUtil
 import consumers
 
 
@@ -22,8 +23,7 @@ class DriveUploadService:
 
         drive_content: bytes = b64decode(args.content)
 
-        with open(drive_path, "wb") as file:
-            file.write(drive_content)
+        FileUtil.write(drive_path, drive_content, "wb")
 
         publisher_payload: Mapping[str, Any] = consumers.ConsumerDriveCreationPayload(
             args.filename, str(drive_path), args.user.id_uuid

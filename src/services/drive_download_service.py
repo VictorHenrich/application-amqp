@@ -9,6 +9,7 @@ from patterns.repositories import IFindRepository
 from consumers import ConsumerAccessCreationPayload, ConsumerEmailSendingPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
+from utils import FileUtil
 
 
 @dataclass
@@ -38,33 +39,33 @@ class DriveDownloadService:
 
             full_path: Path = Path() / args.user.path / drive.path
 
-            with open(full_path, "rb") as file:
+            file: BytesIO = FileUtil.read(full_path, "rb")
 
-                publisher_access_creation_payload: Mapping[
-                    str, Any
-                ] = ConsumerAccessCreationPayload(
-                    args.user.id_uuid, args.drive_uuid, "download"
-                ).__dict__
+            publisher_access_creation_payload: Mapping[
+                str, Any
+            ] = ConsumerAccessCreationPayload(
+                args.user.id_uuid, args.drive_uuid, "download"
+            ).__dict__
 
-                app.amqp.create_publisher(
-                    "publisher_access_creation",
-                    "exchange_access_creation",
-                    publisher_access_creation_payload,
-                )
+            app.amqp.create_publisher(
+                "publisher_access_creation",
+                "exchange_access_creation",
+                publisher_access_creation_payload,
+            )
 
-                publisher_email_seding_payload: Mapping[
-                    str, Any
-                ] = ConsumerEmailSendingPayload(
-                    (args.user.email, ),
-                    "Acesso na plataforma DRIVE",
-                    f"Um download foi realizado com um usuário autenticado ({args.user.name.upper()}) "
-                    + f"\nRealizado download do arquivo {drive.name}",
-                ).__dict__
+            publisher_email_seding_payload: Mapping[
+                str, Any
+            ] = ConsumerEmailSendingPayload(
+                (args.user.email,),
+                "Acesso na plataforma DRIVE",
+                f"Um download foi realizado com um usuário autenticado ({args.user.name.upper()}) "
+                + f"\nRealizado download do arquivo {drive.name}",
+            ).__dict__
 
-                app.amqp.create_publisher(
-                    "publisher_email_sending",
-                    "exchange_email_sending",
-                    publisher_email_seding_payload,
-                )
+            app.amqp.create_publisher(
+                "publisher_email_sending",
+                "exchange_email_sending",
+                publisher_email_seding_payload,
+            )
 
-                return BytesIO(file.read()), drive.name
+            return file, drive.name
