@@ -31,7 +31,7 @@ class FileUtil:
     def write(
         path: FilePath, content: Union[str, bytes], mode: WriteMode = "wb"
     ) -> None:
-        filepath: Path - Path(path)
+        filepath: Path = Path(path)
 
         with open(filepath, mode) as file:
             file.write(content)
@@ -46,7 +46,7 @@ class FileUtil:
                 with TemporaryFile(delete=False, dir=temp_directory) as temp_file:
                     temp_file.write(file.read())
 
-            with ZipFile(temp_directory) as zip:
+            with ZipFile(temp_directory, 'w') as zip:
                 zip.write(zipname)
 
                 return BytesIO(zip.read())
