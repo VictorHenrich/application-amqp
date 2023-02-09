@@ -6,5 +6,5 @@ from api.controllers.user_auth_controller import UserAuthController
 
 
 app.http.add_resource(DriveUploadController, "/drive/upload")
-app.http.add_resource(DriveDownloadController, "/drive/download/<uuid:drive_hash>")
+app.http.add_resource(DriveDownloadController, "/drive/download/<uuid:drive_hash>", "/drive/download")
 app.http.add_resource(UserAuthController, "/user/auth")

@@ -1,6 +1,8 @@
-from typing import IO, Union, TypeAlias, Literal, TextIO, BinaryIO
+from typing import IO, Union, TypeAlias, Literal, Sequence
 from pathlib import Path
 from io import BytesIO, StringIO
+from zipfile import ZipFile
+from tempfile import TemporaryFile, TemporaryDirectory
 
 
 FilePath: TypeAlias = Union[str, Path]
@@ -33,3 +35,19 @@ class FileUtil:
 
         with open(filepath, mode) as file:
             file.write(content)
+
+    @staticmethod
+    def zip(
+        files: Sequence[IO],
+        zipname: str,
+    ) -> IO:
+        with TemporaryDirectory() as temp_directory:
+            for file in files:
+                with TemporaryFile(delete=False, dir=temp_directory) as temp_file:
+                    temp_file.write(file.read())
+
+            with ZipFile(temp_directory) as zip:
+                zip.write(zipname)
+
+                return BytesIO(zip.read())
+
