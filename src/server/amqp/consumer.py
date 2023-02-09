@@ -56,7 +56,6 @@ class AMQPConsumer(AbstractAMQP, ABC):
         properties: BasicProperties,
         body: bytes,
     ) -> None:
-
         options: Mapping[str, Any] = {
             "channel": ch,
             "method": method,

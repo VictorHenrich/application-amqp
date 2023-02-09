@@ -12,6 +12,6 @@ from .user_auth_token_service import UserAuthTokenService, UserAuthTokenServiceP
 
 from .access_creation_service import AccessCreationService, AccessCreationServiceProps
 
-from  .drives_downloads_service import DrivesDownloadService, DrivesDownloadServiceProps
+from .drives_downloads_service import DrivesDownloadService, DrivesDownloadServiceProps
 
 from .drives_uploads_service import DrivesUploadsService, DrivesUploadsServiceProps

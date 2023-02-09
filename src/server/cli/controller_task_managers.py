@@ -30,7 +30,6 @@ class ControllerTaskManagers:
     def __create_config_argument(
         self, name: str, version: Union[float, str], description: str, usage: str
     ) -> Tuple[ArgumentParser, _SubParsersAction[ArgumentParser]]:
-
         argument: ArgumentParser = ArgumentParser(
             prog=name, description=description, usage=usage
         )

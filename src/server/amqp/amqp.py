@@ -50,7 +50,6 @@ class AMQP:
         data_class: Optional[Type] = None,
     ) -> ReturnDecoratorAddConsumer:
         def wrapper(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
-
             connection_: ConnectionParameters = connection or self.__default_connection
 
             consumer: AMQPConsumer = cls(

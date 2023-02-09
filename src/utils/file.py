@@ -46,8 +46,7 @@ class FileUtil:
                 with TemporaryFile(delete=False, dir=temp_directory) as temp_file:
                     temp_file.write(file.read())
 
-            with ZipFile(temp_directory, 'w') as zip:
+            with ZipFile(temp_directory, "w") as zip:
                 zip.write(zipname)
 
                 return BytesIO(zip.read())
-

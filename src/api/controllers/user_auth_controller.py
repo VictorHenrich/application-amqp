@@ -15,7 +15,6 @@ class UserAuthController(HTTPController):
         user_auth_service: IService[UserAuthServiceProps, str] = UserAuthService()
 
         try:
-
             token: str = user_auth_service.execute(user_auth_service_props)
 
             return ResponseSuccess(token)

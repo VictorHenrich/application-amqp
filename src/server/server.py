@@ -75,7 +75,6 @@ class ServerFactory:
         description: str = "",
         usage: str = "",
     ) -> ControllerTaskManagers:
-
         cli: ControllerTaskManagers = ControllerTaskManagers(
             name, version, description, usage
         )

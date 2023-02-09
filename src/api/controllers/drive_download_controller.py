@@ -4,7 +4,12 @@ from uuid import UUID
 from start import app
 from server.http import HTTPController, BaseResponse, ResponseIO
 from patterns.service import IService
-from services import DriveDownloadService, DriveDownloadServiceProps, DrivesDownloadService, DrivesDownloadServiceProps
+from services import (
+    DriveDownloadService,
+    DriveDownloadServiceProps,
+    DrivesDownloadService,
+    DrivesDownloadServiceProps,
+)
 from models import User
 from api.middlewares import UserAuthMiddleware
 
@@ -33,10 +38,16 @@ class DriveDownloadController:
         def post(self, auth: User) -> BaseResponse:
             data: Mapping[str, Any] = app.http.global_request.json
 
-            drives_download_props: DrivesDownloadServiceProps = DrivesDownloadServiceProps(auth, data['drives'])
+            drives_download_props: DrivesDownloadServiceProps = (
+                DrivesDownloadServiceProps(auth, data["drives"])
+            )
 
-            drives_download_service: IService[DrivesDownloadServiceProps, Sequence[bytes]] = DrivesDownloadService()
+            drives_download_service: IService[
+                DrivesDownloadServiceProps, Sequence[bytes]
+            ] = DrivesDownloadService()
 
-            zip_file: Sequence[bytes] = drives_download_service.execute(drives_download_props)
+            zip_file: Sequence[bytes] = drives_download_service.execute(
+                drives_download_props
+            )
 
-            return ResponseIO(zip_file, 'arquivo.zip')
+            return ResponseIO(zip_file, "arquivo.zip")
