@@ -1,5 +1,9 @@
 from .drive_create_repository import DriveCreateRepository, DriveCreateRepositoryProps
 from .drive_find_repository import DriveFindRepository, DriveFindRepositoryProps
+from .drive_find_many_repository import (
+    DriveFindManyRepository,
+    DriveFindManyRepositoryProps,
+)
 from .user_auth_repository import UserAuthRepository, UserAuthRepositoryProps
 from .user_find_repository import UserFindRepository, UserFindRepositoryProps
 from .access_create_repository import (

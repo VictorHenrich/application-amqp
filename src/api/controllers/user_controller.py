@@ -10,8 +10,8 @@ from services import (
     UserCreationServiceProps,
     UserUpdateService,
     UserUpdateServiceProps,
-    UserExclusionService,
-    UserExclusionServiceProps,
+    UserFolderExclusionService,
+    UserFolderExclusionServiceProps,
 )
 
 user_auth_middleware: HTTPMiddleware = UserAuthMiddleware()
@@ -59,14 +59,14 @@ class UserController(HTTPController):
 
     @user_auth_middleware.apply()
     def delete(self, auth: User):
-        user_exclusion_props: UserExclusionServiceProps = UserExclusionServiceProps(
-            auth
+        user_folder_exclusion_props: UserFolderExclusionServiceProps = (
+            UserFolderExclusionServiceProps(auth)
         )
 
-        user_exclusion_service: IService[
-            UserExclusionServiceProps, None
-        ] = UserExclusionService()
+        user_folder_exclusion_service: IService[
+            UserFolderExclusionServiceProps, None
+        ] = UserFolderExclusionService()
 
-        user_exclusion_service.execute(user_exclusion_props)
+        user_folder_exclusion_service.execute(user_folder_exclusion_props)
 
         return ResponseSuccess()

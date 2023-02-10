@@ -1,6 +1,7 @@
-from .consumer_drive_creation import ConsumerDriveCreation, ConsumerDriveCreationPayload
-from .consumer_email_sending import ConsumerEmailSending, ConsumerEmailSendingPayload
-from .consumer_access_creation import (
-    ConsumerAccessCreation,
-    ConsumerAccessCreationPayload,
+from .drive_creation_consumer import DriveCreationConsumer, DriveCreationConsumerPayload
+from .email_sending_consumer import EmailSendingConsumer, EmailSendingConsumerPayload
+from .access_creation_consumer import (
+    AccessCreationConsumer,
+    AccessCreationConsumerPayload,
 )
+from .user_exclusion_consumer import UserExclusionConsumer, UserExclusionConsumerPayload

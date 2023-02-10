@@ -12,5 +12,5 @@ app.http.add_resource(DriveDownloadController.DriveDownloadMany, "/drive/downloa
 app.http.add_resource(
     DriveDownloadController.DriveDownloadOne, "/drive/download/one/<uuid:drive_hash>"
 )
-app.http.add_resource(UserController, '/user/register')
+app.http.add_resource(UserController, "/user/register")
 app.http.add_resource(UserAuthController, "/user/auth")

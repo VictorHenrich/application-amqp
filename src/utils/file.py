@@ -11,8 +11,8 @@ WriteMode: TypeAlias = Literal["wb", "w"]
 
 
 class FileUtil:
-    @staticmethod
-    def read(path: FilePath, mode: ReadMode = "rb") -> IO:
+    @classmethod
+    def read(cls, path: FilePath, mode: ReadMode = "rb") -> IO:
         filepath: Path = Path(path)
 
         with open(filepath, mode) as file:
@@ -27,17 +27,18 @@ class FileUtil:
             else:
                 raise Exception("File type is invalid!")
 
-    @staticmethod
+    @classmethod
     def write(
-        path: FilePath, content: Union[str, bytes], mode: WriteMode = "wb"
+        cls, path: FilePath, content: Union[str, bytes], mode: WriteMode = "wb"
     ) -> None:
         filepath: Path = Path(path)
 
         with open(filepath, mode) as file:
             file.write(content)
 
-    @staticmethod
+    @classmethod
     def zip(
+        cls,
         files: Sequence[IO],
         zipname: str,
     ) -> IO:
@@ -50,3 +51,16 @@ class FileUtil:
                 zip.write(zipname)
 
                 return BytesIO(zip.read())
+
+    @classmethod
+    def remove(cls, path: FilePath) -> None:
+        p: Path = Path(path)
+
+        if p.is_dir():
+            for file in p.iterdir():
+                cls.remove(file)
+
+            p.rmdir()
+
+        if p.is_file():
+            p.unlink()

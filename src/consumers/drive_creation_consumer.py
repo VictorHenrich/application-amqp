@@ -7,7 +7,7 @@ from patterns.service import IService
 
 
 @dataclass
-class ConsumerDriveCreationPayload:
+class DriveCreationConsumerPayload:
     filename: str
     path: str
     user_uuid: str
@@ -17,11 +17,11 @@ class ConsumerDriveCreationPayload:
     "consumer_drive_creation",
     "queue_drive_creation",
     ack=True,
-    data_class=ConsumerDriveCreationPayload,
+    data_class=DriveCreationConsumerPayload,
 )
-class ConsumerDriveCreation(AMQPConsumer):
+class DriveCreationConsumer(AMQPConsumer):
     def on_message_queue(
-        self, body: ConsumerDriveCreationPayload, **kwargs: Mapping[str, Any]
+        self, body: DriveCreationConsumerPayload, **kwargs: Mapping[str, Any]
     ) -> None:
         drive_creation_props: DriveCreateServiceProps = DriveCreateServiceProps(
             body.filename, body.path, body.user_uuid

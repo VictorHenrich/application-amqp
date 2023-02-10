@@ -32,7 +32,7 @@ class UserCreationService:
                 path.mkdir()
 
             user_create_props: UserCreateRepositoryProps = UserCreate(
-                name=args.name, email=args.email, password=args.password, path=path
+                name=args.name, email=args.email, password=args.password, path=str(path)
             )
 
             user_create_repository: ICreateRepository[
@@ -40,3 +40,5 @@ class UserCreationService:
             ] = UserCreateRepository(session)
 
             user_create_repository.create(user_create_props)
+
+            session.commit()

@@ -22,3 +22,5 @@ class UserUpdateService:
             ] = UserUpdateRepository(session)
 
             user_update_repository.update(args)
+
+            session.commit()

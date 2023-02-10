@@ -5,7 +5,7 @@ from server.amqp import AMQPConsumer
 
 
 @dataclass
-class ConsumerEmailSendingPayload:
+class EmailSendingConsumerPayload:
     to: Sequence[str]
     title: str
     message: str
@@ -15,8 +15,8 @@ class ConsumerEmailSendingPayload:
     "consumer_email_sending",
     "queue_email_sending",
     ack=True,
-    data_class=ConsumerEmailSendingPayload,
+    data_class=EmailSendingConsumerPayload,
 )
-class ConsumerEmailSending(AMQPConsumer):
-    def on_message_queue(self, body: ConsumerEmailSendingPayload, **kwargs) -> None:
+class EmailSendingConsumer(AMQPConsumer):
+    def on_message_queue(self, body: EmailSendingConsumerPayload, **kwargs) -> None:
         app.smtp.send(body.to, body.title, body.message)

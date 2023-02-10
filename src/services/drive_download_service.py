@@ -6,7 +6,7 @@ from pathlib import Path
 from start import app
 from patterns.repositories import IFindRepository
 
-from consumers import ConsumerAccessCreationPayload, ConsumerEmailSendingPayload
+from consumers import AccessCreationConsumerPayload, EmailSendingConsumerPayload
 from repositories import DriveFindRepository, DriveFindRepositoryProps
 from models import User, Drive
 from utils import FileUtil
@@ -43,7 +43,7 @@ class DriveDownloadService:
 
             publisher_access_creation_payload: Mapping[
                 str, Any
-            ] = ConsumerAccessCreationPayload(
+            ] = AccessCreationConsumerPayload(
                 args.user.id_uuid, args.drive_uuid, "download"
             ).__dict__
 
@@ -55,7 +55,7 @@ class DriveDownloadService:
 
             publisher_email_seding_payload: Mapping[
                 str, Any
-            ] = ConsumerEmailSendingPayload(
+            ] = EmailSendingConsumerPayload(
                 (args.user.email,),
                 "Acesso na plataforma DRIVE",
                 f"Um download foi realizado com um usuário autenticado ({args.user.name.upper()}) "

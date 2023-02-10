@@ -25,7 +25,7 @@ class DriveUploadService:
 
         FileUtil.write(drive_path, drive_content, "wb")
 
-        publisher_payload: Mapping[str, Any] = consumers.ConsumerDriveCreationPayload(
+        publisher_payload: Mapping[str, Any] = consumers.DriveCreationConsumerPayload(
             args.filename, str(drive_path), args.user.id_uuid
         ).__dict__
 

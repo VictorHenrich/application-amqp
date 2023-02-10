@@ -11,7 +11,7 @@ from services.access_creation_service import (
 
 
 @dataclass
-class ConsumerAccessCreationPayload:
+class AccessCreationConsumerPayload:
     user_uuid: str
     drive_uuid: str
     operation: str
@@ -21,11 +21,11 @@ class ConsumerAccessCreationPayload:
     "consumer_access_creation",
     "queue_access_creation",
     ack=True,
-    data_class=ConsumerAccessCreationPayload,
+    data_class=AccessCreationConsumerPayload,
 )
-class ConsumerAccessCreation(AMQPConsumer):
+class AccessCreationConsumer(AMQPConsumer):
     def on_message_queue(
-        self, body: ConsumerAccessCreationPayload, **kwargs: Mapping[str, Any]
+        self, body: AccessCreationConsumerPayload, **kwargs: Mapping[str, Any]
     ) -> None:
         access_creation_props: AccessCreationServiceProps = AccessCreationServiceProps(
             body.user_uuid, body.drive_uuid, body.operation

@@ -21,3 +21,8 @@ from .user_creation_service import UserCreationService, UserCreationServiceProps
 from .user_exclusion_service import UserExclusionService, UserExclusionServiceProps
 
 from .user_update_service import UserUpdateService, UserUpdateServiceProps
+
+from .user_folder_exclusion_service import (
+    UserFolderExclusionService,
+    UserFolderExclusionServiceProps,
+)
