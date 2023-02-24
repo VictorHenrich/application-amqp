@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Union, Tuple, TypeAlias, Mapping, Optional, Any, Sequence, Callable
+from typing import Union, Tuple, TypeAlias, Dict, Optional, Any, Sequence, Callable
 from argparse import ArgumentParser, _SubParsersAction, Namespace
 from .icommand import ICommand
 
@@ -9,6 +9,7 @@ from .task import Task
 
 ITask: TypeAlias = ICommand[Any]
 ITaskManager: TypeAlias = ICommand[Sequence[str]]
+Managers: TypeAlias = Dict[str, TaskManager]
 
 
 class ControllerTaskManagers:
@@ -21,10 +22,10 @@ class ControllerTaskManagers:
 
         self.__argument: ArgumentParser = argument
         self.__subparsers: _SubParsersAction[ArgumentParser] = subparsers
-        self.__managers: Mapping[str, ITaskManager] = {}
+        self.__managers: Managers = {}
 
     @property
-    def tasks_managers(self) -> Mapping[str, ITaskManager]:
+    def tasks_managers(self) -> Managers:
         return self.__managers
 
     def __create_config_argument(

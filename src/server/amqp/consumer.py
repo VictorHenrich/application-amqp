@@ -70,4 +70,4 @@ class AMQPConsumer(AbstractAMQP, ABC):
 
     @abstractmethod
     def on_message_queue(self, body: Any, **kwargs: Mapping[str, Any]) -> None:
-        pass
+        ...

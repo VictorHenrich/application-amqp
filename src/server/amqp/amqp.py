@@ -1,4 +1,4 @@
-from typing import Mapping, Optional, Any, Callable, TypeAlias, List, Type
+from typing import Dict, Optional, Any, Callable, TypeAlias, List, Type
 from threading import Thread
 from pika import ConnectionParameters
 
@@ -13,7 +13,7 @@ ConnectionParametersOptional: TypeAlias = Optional[ConnectionParameters]
 
 class AMQP:
     def __init__(self, default_connection: ConnectionParametersOptional) -> None:
-        self.__consumers: Mapping[str, AMQPConsumer] = {}
+        self.__consumers: Dict[str, AMQPConsumer] = {}
         self.__default_connection: ConnectionParametersOptional = default_connection
 
     @property
@@ -24,14 +24,21 @@ class AMQP:
         self,
         publisher_name: str,
         exchange: str,
-        body: Mapping[str, Any],
+        body: Dict[str, Any],
         connection: Optional[ConnectionParameters] = None,
         routing_key: str = "",
-        properties: Mapping[str, Any] = {"delivery_mode": 2},
+        properties: Dict[str, Any] = {"delivery_mode": 2},
     ) -> None:
+        connection_: Optional[ConnectionParameters] = (
+            connection or self.__default_connection
+        )
+
+        if not connection_:
+            raise Exception("Connection is not defined!")
+
         publiser: AMQPPublisher = AMQPPublisher(
             publisher_name,
-            connection or self.__default_connection,
+            connection_,
             exchange,
             body,
             routing_key,
@@ -46,11 +53,16 @@ class AMQP:
         queue_name: str,
         ack: bool = True,
         connection: ConnectionParametersOptional = None,
-        arguments: Optional[Mapping[str, Any]] = None,
+        arguments: Optional[Dict[str, Any]] = None,
         data_class: Optional[Type] = None,
     ) -> ReturnDecoratorAddConsumer:
         def wrapper(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
-            connection_: ConnectionParameters = connection or self.__default_connection
+            connection_: Optional[ConnectionParameters] = (
+                connection or self.__default_connection
+            )
+
+            if not connection_:
+                raise Exception("Connection is not defined!")
 
             consumer: AMQPConsumer = cls(
                 consumer_name, connection_, queue_name, ack, arguments, data_class
@@ -58,7 +70,7 @@ class AMQP:
 
             self.__consumers[consumer.name] = consumer
 
-            cls
+            return cls
 
         return wrapper
 

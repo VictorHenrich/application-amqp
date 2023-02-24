@@ -1,19 +1,22 @@
 from abc import ABC
 import json
-from io import IOBase
-from typing import Optional, Any, Mapping, TypeAlias, Union, IO, Sequence, Union
+from typing import Optional, Any, Mapping, TypeAlias, Union, IO, Iterable, Union
 from flask import Response
 from utils.constants import __MIME_TYPES__
 
 
 MappingDict: TypeAlias = Mapping[str, Any]
 ContentFile: TypeAlias = Union[str, bytes, IO]
-StreamFile: TypeAlias = Sequence[Union[bytes, str]]
+StreamFile: TypeAlias = Iterable[Union[str, bytes]]
 
 
 class BaseResponse(Response, ABC):
     def __init__(
-        self, message: str, status: int, data: Any, headers: MappingDict = None
+        self,
+        message: str,
+        status: int,
+        data: Any,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         response_json: MappingDict = {"message": message, "status": status}
 
@@ -33,7 +36,7 @@ class ResponseSuccess(BaseResponse):
         data: Optional[Any] = None,
         message: str = "OK",
         status: int = 200,
-        headers: MappingDict = None,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         super().__init__(message, status, data, headers)
 
@@ -44,7 +47,7 @@ class ResponseFailure(BaseResponse):
         data: Any,
         message: str = "ERROR",
         status: int = 500,
-        headers: MappingDict = None,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         super().__init__(message, status, data, headers)
 
@@ -55,7 +58,7 @@ class ResponseNotFound(BaseResponse):
         data: Any,
         message: str = "NOT FOUND",
         status: int = 404,
-        headers: MappingDict = None,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         super().__init__(message, status, data, headers)
 
@@ -66,7 +69,7 @@ class ResponseUnauthorized(BaseResponse):
         data: Any,
         message: str = "UNAUTHORIZED",
         status: int = 401,
-        headers: MappingDict = None,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         super().__init__(message, status, data, headers)
 
@@ -77,7 +80,7 @@ class ResponseIO(Response):
         content: ContentFile,
         filename: str,
         status=200,
-        headers: MappingDict = None,
+        headers: Optional[MappingDict] = None,
     ) -> None:
         response: StreamFile = self.__handle_content(content)
 
@@ -101,10 +104,10 @@ class ResponseIO(Response):
             return __MIME_TYPES__["bin"]
 
     def __handle_content(self, content: ContentFile) -> StreamFile:
-        if isinstance(content, IOBase):
+        if isinstance(content, IO):
             return self.__handle_content_io(content)
 
-        if isinstance(content, (str, bytes, Sequence)):
+        if isinstance(content, (str, bytes, Iterable)):
             return self.__handle_content_default(content)
 
         else:
@@ -114,14 +117,7 @@ class ResponseIO(Response):
         if not content.readable():
             raise Exception("IO content needs to be readable")
 
-        return content.readlines()
+        return iter(content.readlines())
 
     def __handle_content_default(self, content: Union[str, bytes]) -> StreamFile:
-        if type(content) is str:
-            return content.split()
-
-        if type(content) is bytes:
-            return content.split()
-
-        if isinstance(content, Sequence):
-            return content
+        return iter([content])

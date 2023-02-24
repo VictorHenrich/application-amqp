@@ -33,4 +33,4 @@ class HTTP(Api):
         return self.__global_request
 
     def start(self) -> None:
-        self.__core.run(host=self.__host, port=self.__port, debug=self.__debug)
+        self.__core.run(host=self.__host, port=int(self.__port), debug=self.__debug)

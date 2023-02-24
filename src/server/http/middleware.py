@@ -14,8 +14,9 @@ from .response import BaseResponse
 
 Args: TypeAlias = Sequence[Any]
 Kwargs: TypeAlias = Mapping[str, Any]
-Target: TypeAlias = Callable[[Args, Kwargs], Union[BaseResponse, Response]]
-Wrapper: TypeAlias = Callable[[Args, Kwargs], Any]
+Target: TypeAlias = Callable[[Any], Union[BaseResponse, Response]]
+Wrapper: TypeAlias = Callable[[Any], Union[BaseResponse, Response]]
+Decorator: TypeAlias = Callable[[Target], Wrapper]
 HandleReturn: TypeAlias = Union[
     Awaitable[Optional[Kwargs]], Optional[Kwargs], BaseResponse, Response
 ]
@@ -24,21 +25,26 @@ HandleReturn: TypeAlias = Union[
 class HTTPMiddleware(ABC):
     @abstractmethod
     def handle(self, *args: Args, **kwargs: Kwargs) -> HandleReturn:
-        pass
+        ...
 
-    def apply(self, *args: Args, **kwargs: Kwargs) -> Target:
-        def wrapper(target: Target) -> Wrapper:
-            def w(*a: Args, **k: Kwargs) -> Any:
+    def apply(self, *args: Args, **kwargs: Kwargs) -> Decorator:
+        def decorator(target: Target) -> Wrapper:
+            def wrapper(*a: Args, **k: Kwargs) -> Union[BaseResponse, Response]:
                 result: HandleReturn = self.handle(*args, **kwargs)
 
                 if isinstance(result, Response):
                     return result
 
-                else:
+                if isinstance(result, dict):
                     k_: Mapping[str, Any] = {**k, **(result or {})}
 
                     return target(*a, **k_)
 
-            return w
+                else:
+                    raise Exception(
+                        "Response returned by request is invalid Response | BaseResponse"
+                    )
 
-        return wrapper
+            return wrapper
+
+        return decorator

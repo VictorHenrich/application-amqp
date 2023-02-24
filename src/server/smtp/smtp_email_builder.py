@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Union, TypeAlias
+from typing import Optional, Union, TypeAlias, Sequence
 from dataclasses import dataclass
 from .smtp_email import SMTPEmail
 
@@ -9,8 +9,8 @@ PortType: TypeAlias = Union[str, int]
 
 @dataclass
 class SMTPEmailBuilder:
-    host: OptionalString = None
-    port: Optional[PortType] = None
+    host: str = ""
+    port: PortType = 0
     username: OptionalString = None
     password: OptionalString = None
     tls: bool = False
@@ -43,6 +43,9 @@ class SMTPEmailBuilder:
         return self
 
     def build(self) -> SMTPEmail:
-        return SMTPEmail(
-            self.host, self.port, (self.username, self.password), self.ssl, self.tls
-        )
+        credentials: Optional[Sequence[str]] = None
+
+        if self.username and self.password:
+            credentials = self.username, self.password
+
+        return SMTPEmail(self.host, int(self.port), credentials, self.ssl, self.tls)

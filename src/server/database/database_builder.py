@@ -69,7 +69,10 @@ class DatabaseBuilder:
         return self
 
     def build(self) -> Database:
-        drive: str = self.drive_async if self.async_ else self.drive_default
+        drive: Optional[str] = self.drive_async if self.async_ else self.drive_default
+
+        if not drive:
+            raise Exception("Drive is not defined!")
 
         connection_url: str = f"{self.dialect}+{drive}://{self.username}:{self.password}@{self.host}:{self.port}/{self.dbname}"
 

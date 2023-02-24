@@ -1,12 +1,14 @@
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from patterns.models import BaseModel
 
 
 class User(BaseModel):
     __tablename__: str = "usuarios"
-    name: str = Column(String(200), nullable=False)
-    email: str = Column(String(200), nullable=False, unique=True)
-    password: str = Column(String(50), nullable=False)
-    path: str = Column(String(1000), nullable=False, unique=True)
-    created: datetime = Column(DateTime, default=datetime.now)
+
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(300), nullable=False, unique=True)
+    password: Mapped[str] = mapped_column(String(50), nullable=False)
+    path: Mapped[str] = mapped_column(nullable=False)
+    created: Mapped[datetime] = mapped_column(default=datetime.now)

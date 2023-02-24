@@ -37,7 +37,7 @@ class Task(ABC):
 
     @abstractmethod
     def run(self) -> Union[None, Awaitable[None]]:
-        pass
+        ...
 
     def __reset_print(self) -> None:
         print(Style.RESET_ALL, Fore.RESET)
@@ -61,8 +61,8 @@ class Task(ABC):
 
         self.__reset_print()
 
-    def execute(self, args: None = None) -> None:
-        result: Optional[Coroutine] = self.run()
+    def execute(self, args: None) -> None:
+        result: Optional[Awaitable[None]] = self.run()
 
         if type(result) is Coroutine:
             asyncio.run(result)

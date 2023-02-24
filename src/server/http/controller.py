@@ -12,16 +12,16 @@ Kwargs: TypeAlias = Mapping[str, Any]
 
 class HTTPController(Resource, ABC):
     def post(self, *args: Args, **kwargs: Kwargs) -> Union[BaseResponse, Response]:
-        pass
+        ...
 
     def put(self, *args: Args, **kwargs: Kwargs) -> Union[BaseResponse, Response]:
-        pass
+        ...
 
     def get(self, *args: Args, **kwargs: Kwargs) -> Union[BaseResponse, Response]:
-        pass
+        ...
 
     def delete(self, *args: Args, **kwargs: Kwargs) -> Union[BaseResponse, Response]:
-        pass
+        ...
 
     def patch(self, *args: Args, **kwargs: Kwargs) -> Union[BaseResponse, Response]:
-        pass
+        ...

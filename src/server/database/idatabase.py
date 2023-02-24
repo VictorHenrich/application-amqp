@@ -11,7 +11,7 @@ class IDatabase(Protocol):
     def create_session(
         self, *args: Args, **kwargs: Kwargs
     ) -> Union[Session, AsyncSession]:
-        pass
+        ...
 
     def migrate(self, drop_tables: bool, *args: Args, **kwargs: Kwargs) -> None:
-        pass
+        ...

@@ -1,4 +1,4 @@
-from typing import Mapping, TypeAlias, Any, Sequence
+from typing import Dict, TypeAlias, Any, Sequence
 from argparse import ArgumentParser, _SubParsersAction
 import sys
 
@@ -6,7 +6,7 @@ from .icommand import ICommand
 from .task import Task
 
 
-TasksMapping: TypeAlias = Mapping[str, ICommand[Any]]
+TasksMapping: TypeAlias = Dict[str, ICommand[Any]]
 
 
 class TaskManager:
@@ -45,7 +45,7 @@ class TaskManager:
                 if task_name.upper() in handle_args
             ][0]
 
-            task.execute()
+            task.execute(None)
 
         except IndexError:
             self.__argument.print_help()
